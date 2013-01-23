@@ -86,6 +86,14 @@ public class SecureNote extends Activity {
 					EditText txtPassword = (EditText) findViewById(R.id.txtPassword);
 					txtPassword.setText("");
 
+//					Intent startNewActivityOpen = new Intent(SecureNote.this,
+//							NotesList.class);
+
+					try {
+//						startActivity(startNewActivityOpen);
+					} catch (Exception e) {
+						Log.e(tag, e.getMessage() + "### Error #####");
+					}
 				} else {
 
 					Toast.makeText(SecureNote.this,
@@ -95,21 +103,6 @@ public class SecureNote extends Activity {
 			}
 		});
 	}
-
-	// Button btnRegister = (Button) findViewById(R.id.btnRegister);
-	//
-	// btnRegister.setOnClickListener(new OnClickListener() {
-	//
-	// @Override
-	// public void onClick(View v) {
-	//
-	// Intent startNewActivityOpen = new Intent(SecureNote.this,
-	// RegisterUser.class);
-	// startActivity(startNewActivityOpen);
-	//
-	// }
-	// });
-	// }
 
 	/**
 	 * Run a query to get some data, then add it to a List and format as you
