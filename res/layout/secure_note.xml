@@ -6,7 +6,7 @@
 <TableRow> 
  <TextView 
 
- android:text="@string/registration" 
+ android:text="@string/login_" 
  android:id="@+id/TextView01" 
  android:layout_width="wrap_content" 
  android:layout_height="wrap_content">
@@ -61,18 +61,35 @@
 
 <TableRow>
 
-    <Button
-        android:id="@+id/btnCancel"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/cancel" />
+	<TextView 
+	 android:text="@string/space" 
+	 android:id="@+id/TextView01" 
+	 android:layout_width="wrap_content" 
+	 android:layout_height="wrap_content">
+	 </TextView>
     
-        <Button
+    <Button
         android:id="@+id/btnLogin"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/submit" />
+        android:text="@string/enter" />
     
 </TableRow>
+
+<TableRow>
+ 
+</TableRow>
+
+<TextView
+    android:id="@+id/TextView02"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/space" />
+
+<TextView
+    android:id="@+id/ShowMsg"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/space" />
 
 </TableLayout>
