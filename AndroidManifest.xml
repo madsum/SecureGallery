@@ -25,8 +25,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="fi.masum.securegallery.SecureNote"
-            android:label="@string/title_activity_secure_note" >
+            android:name="fi.masum.securegallery.Login"
+            android:label="@string/title_activity_login" >
         </activity>
         <activity
             android:name="fi.masum.securegallery.RecoverPass"
