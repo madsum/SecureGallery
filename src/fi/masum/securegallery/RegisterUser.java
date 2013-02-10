@@ -12,7 +12,6 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
-//import android.os.Bundle;
 
 public class RegisterUser extends Activity {
 
@@ -38,7 +37,7 @@ public class RegisterUser extends Activity {
 		final EditText txtUserName = (EditText) findViewById(R.id.txtUsername);
 		final EditText txtPassword = (EditText) findViewById(R.id.txtPassword);
 
-		Button btnSubmit = (Button) findViewById(R.id.btnLogin);
+		Button btnSubmit = (Button) findViewById(R.id.btnSubmit);
 
 		btnSubmit.setOnClickListener(new OnClickListener() {
 
@@ -56,10 +55,11 @@ public class RegisterUser extends Activity {
 				} finally {
 					userDB.close();
 				}
-				finish();
+				
 				Intent startNewActivityOpen = new Intent(RegisterUser.this,
-						SecureNote.class);
+						Login.class);
 				startActivity(startNewActivityOpen);
+				finish();
 
 			}
 		});
@@ -70,11 +70,10 @@ public class RegisterUser extends Activity {
 
 			@Override
 			public void onClick(View v) {
-
-				Intent startNewActivityOpen = new Intent(RegisterUser.this,
-						SecureNote.class);
-				startActivity(startNewActivityOpen);
-
+				Intent intent = new Intent(Intent.ACTION_MAIN);
+				intent.addCategory(Intent.CATEGORY_HOME);
+				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				startActivity(intent);
 			}
 		});
 	}
@@ -90,12 +89,4 @@ public class RegisterUser extends Activity {
 
 		userDB.execSQL("INSERT INTO " + credential + " Values ('aaa','bbb');");
 	}
-
-//	@Override
-//	public boolean onCreateOptionsMenu(Menu menu) {
-//		// Inflate the menu; this adds items to the action bar if it is present.
-//		getMenuInflater().inflate(R.menu.register_user, menu);
-//		return true;
-//	}
-
 }

@@ -1,33 +1,27 @@
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+ <FrameLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"  
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:stretchColumns="1">
+    >
+    
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
 
-<TableRow> 
- <TextView 
-
- android:text="@string/registration" 
+<TextView 
+ android:text="@string/_new_user" 
  android:id="@+id/TextView01" 
+ android:layout_gravity="center_horizontal"
  android:layout_width="wrap_content" 
  android:layout_height="wrap_content">
- </TextView>
  
-</TableRow>
-  
-<TableRow >
- <TextView 
- android:text="@string/space" 
- android:id="@+id/TextView01" 
- android:layout_width="wrap_content" 
- android:layout_height="wrap_content">
- </TextView>  
-</TableRow>
+ </TextView>
 
-<TableRow>
  <TextView 
- android:text="@string/user_name_" 
+ android:text="@string/user_name_"
  android:id="@+id/TextView01" 
- android:layout_width="wrap_content" 
+ android:layout_width="fill_parent" 
  android:layout_height="wrap_content">
  </TextView>
  
@@ -36,43 +30,57 @@
      android:layout_width="fill_parent"
      android:layout_height="wrap_content"
      android:text="" >
-
  </EditText>
-</TableRow>
-
-
-<TableRow>
+ 
  <TextView 
- android:text="@string/password_" 
- android:id="@+id/TextView02" 
- android:layout_width="wrap_content" 
+ android:text="@string/password_"
+ android:id="@+id/TextView01" 
+ android:layout_width="fill_parent" 
  android:layout_height="wrap_content">
  </TextView>
-
+ 
  <EditText
      android:id="@+id/txtPassword"
      android:layout_width="fill_parent"
      android:layout_height="wrap_content"
      android:password="true"
      android:text="" >
-
  </EditText>
-</TableRow>
+ 
+<TextView 
+ android:text="@string/email_"
+ android:id="@+id/TextView01" 
+ android:layout_width="fill_parent" 
+ android:layout_height="wrap_content">
+ </TextView>
+ 
+ <EditText
+     android:id="@+id/txtEmail"
+     android:layout_width="fill_parent"
+     android:layout_height="wrap_content"
+     android:text="" >
+ </EditText>
+  
+ 
+ <LinearLayout
+     android:orientation="horizontal"
+     android:layout_width="fill_parent"
+     android:layout_height="fill_parent">
 
-<TableRow>
-
-    <Button
-        android:id="@+id/btnCancel"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/cancel" />
+ <Button
+     android:id="@+id/btnCancel"
+     android:text="@string/cancel"
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"      
+     />
+  <Button
+     android:id="@+id/btnSubmit"
+     android:text="@string/submit"
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+     />
+ </LinearLayout>
+ </LinearLayout>
     
-        <Button
-        android:id="@+id/btnLogin"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/submit" />
-    
-</TableRow>
-
-</TableLayout>
+</FrameLayout>
+ 

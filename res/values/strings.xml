@@ -15,5 +15,9 @@
     <string name="title_activity_secure_note">SecureNote</string>
     <string name="login_">"Login: "</string>
     <string name="enter">Enter</string>
+    <string name="_new_user">Register a new user</string>
+    <string name="email_">"Email: "</string>
+    <string name="title_activity_login">Login</string>
+    <string name="login">Login</string>
 
 </resources>

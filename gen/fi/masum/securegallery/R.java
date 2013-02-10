@@ -25,35 +25,41 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
-        public static final int ShowMsg=0x7f080006;
         public static final int TextView01=0x7f080000;
-        public static final int TextView02=0x7f080002;
-        public static final int btnCancel=0x7f080004;
-        public static final int btnLogin=0x7f080005;
-        public static final int menu_settings=0x7f080007;
-        public static final int txtPassword=0x7f080003;
+        public static final int TextView03=0x7f080004;
+        public static final int btnCancel=0x7f080006;
+        public static final int btnLogin=0x7f080003;
+        public static final int btnSubmit=0x7f080007;
+        public static final int menu_settings=0x7f080008;
+        public static final int txtEmail=0x7f080005;
+        public static final int txtPassword=0x7f080002;
         public static final int txtUsername=0x7f080001;
     }
     public static final class layout {
-        public static final int register_user=0x7f030000;
-        public static final int secure_note=0x7f030001;
+        public static final int login=0x7f030000;
+        public static final int register_user=0x7f030001;
     }
     public static final class menu {
-        public static final int secure_note=0x7f070000;
+        public static final int login=0x7f070000;
+        public static final int secure_note=0x7f070001;
     }
     public static final class string {
+        public static final int _new_user=0x7f05000e;
         public static final int app_name=0x7f050000;
         public static final int cancel=0x7f050007;
         public static final int dummy_button=0x7f050002;
         public static final int dummy_content=0x7f050001;
+        public static final int email_=0x7f05000f;
         public static final int enter=0x7f05000d;
         public static final int hello_world=0x7f050009;
+        public static final int login=0x7f050011;
         public static final int login_=0x7f05000c;
         public static final int menu_settings=0x7f05000a;
         public static final int password_=0x7f050006;
         public static final int registration=0x7f050003;
         public static final int space=0x7f050004;
         public static final int submit=0x7f050008;
+        public static final int title_activity_login=0x7f050010;
         public static final int title_activity_secure_note=0x7f05000b;
         public static final int user_name_=0x7f050005;
     }
