@@ -76,7 +76,6 @@ public class Login extends Activity {
 				String _username = txtUserName.getText().toString();
 				String _password = txtPassword.getText().toString();
 
-				// insertData();
 				lookupData();
 
 				if (_username.compareTo(username) == 0

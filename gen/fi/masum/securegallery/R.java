@@ -26,12 +26,11 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
     }
     public static final class id {
         public static final int TextView01=0x7f080000;
-        public static final int TextView03=0x7f080004;
-        public static final int btnCancel=0x7f080006;
+        public static final int btnCancel=0x7f080005;
         public static final int btnLogin=0x7f080003;
-        public static final int btnSubmit=0x7f080007;
-        public static final int menu_settings=0x7f080008;
-        public static final int txtEmail=0x7f080005;
+        public static final int btnSubmit=0x7f080006;
+        public static final int menu_settings=0x7f080007;
+        public static final int txtEmail=0x7f080004;
         public static final int txtPassword=0x7f080002;
         public static final int txtUsername=0x7f080001;
     }
