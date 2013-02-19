@@ -25,12 +25,13 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
-        public static final int ShowMsg=0x7f080006;
+        public static final int ShowMsg=0x7f080007;
         public static final int TextView01=0x7f080000;
         public static final int TextView02=0x7f080002;
-        public static final int btnCancel=0x7f080004;
-        public static final int btnLogin=0x7f080005;
-        public static final int menu_settings=0x7f080007;
+        public static final int btnCancel=0x7f080005;
+        public static final int btnLogin=0x7f080006;
+        public static final int menu_settings=0x7f080008;
+        public static final int txtEmail=0x7f080004;
         public static final int txtPassword=0x7f080003;
         public static final int txtUsername=0x7f080001;
     }
@@ -46,6 +47,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int cancel=0x7f050007;
         public static final int dummy_button=0x7f050002;
         public static final int dummy_content=0x7f050001;
+        public static final int email_=0x7f05000e;
         public static final int enter=0x7f05000d;
         public static final int hello_world=0x7f050009;
         public static final int login_=0x7f05000c;

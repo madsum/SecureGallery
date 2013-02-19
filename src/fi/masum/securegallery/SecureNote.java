@@ -18,12 +18,16 @@ import android.widget.Toast;
 public class SecureNote extends Activity {
 
 	private SQLiteDatabase userDB = null;
-	private String credential = "credential";
+	private String table_Name = "user";
+	private String db_name = "login";
+	//private String tag = "masum";
+	//private SQLiteDatabase userDB = null;
+	//private String credential = "credential";
 	private Cursor cursor = null;
 	private String username = null;
 	private String password = null;
-	private String db_name = "user";
-	private String db_path = "/data/data/com.masum.securenote/databases/";
+	//private String db_name = "user";
+	private String db_path = "/data/data/fi.masum.securegallery/databases/";
 	private String tag = "masum";
 	private static boolean test = true;
 
@@ -79,7 +83,10 @@ public class SecureNote extends Activity {
 
 				if (_username.compareTo(username) == 0
 						&& _password.compareTo(password) == 0) {
-
+					
+					Toast.makeText(SecureNote.this,
+							"Login SUCCESSFULL NOW GO ON!", Toast.LENGTH_LONG)
+							.show();
 					Log.i(tag, "#### user:" + username
 							+ " INFO TAG. ##### password: " + password
 							+ "##success!!");
@@ -110,7 +117,7 @@ public class SecureNote extends Activity {
 	 */
 	private void lookupData() {
 		cursor = userDB.rawQuery("SELECT USER_NAME, PASSWORD FROM "
-				+ credential, null);
+				+ table_Name, null);
 
 		Log.e(getClass().getSimpleName(), "#### here i'm!!");
 

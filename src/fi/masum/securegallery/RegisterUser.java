@@ -17,8 +17,8 @@ import android.widget.EditText;
 public class RegisterUser extends Activity {
 
 	private SQLiteDatabase userDB = null;
-	private String credential = "credential";
-	private String db_name = "user";
+	private String table_Name = "user";
+	private String db_name = "login";
 	private String tag = "masum";
 
 	@Override
@@ -27,8 +27,9 @@ public class RegisterUser extends Activity {
 		setContentView(R.layout.register_user);
 
 		try {
-			userDB = openOrCreateDatabase(db_name, MODE_PRIVATE, null);
+			userDB = this.openOrCreateDatabase(db_name, MODE_PRIVATE, null);
 			createTable();
+
 		} catch (SQLiteException se) {
 
 			Log.e(getClass().getSimpleName(), se.getMessage()
@@ -37,6 +38,7 @@ public class RegisterUser extends Activity {
 
 		final EditText txtUserName = (EditText) findViewById(R.id.txtUsername);
 		final EditText txtPassword = (EditText) findViewById(R.id.txtPassword);
+		final EditText txtEmail = (EditText) findViewById(R.id.txtEmail);
 
 		Button btnSubmit = (Button) findViewById(R.id.btnLogin);
 
@@ -46,9 +48,10 @@ public class RegisterUser extends Activity {
 			public void onClick(View v) {
 				String _username = txtUserName.getText().toString();
 				String _password = txtPassword.getText().toString();
+				String _email = txtPassword.getText().toString();
 
 				try {
-					insertData(_username, _password);
+					insertData(_username, _password, _email);
 
 				} catch (SQLiteException ex) {
 					Log.i(tag, "#### insert error ###" + ex.getMessage());
@@ -80,15 +83,20 @@ public class RegisterUser extends Activity {
 	}
 
 	private void createTable() {
-		userDB.execSQL("CREATE TABLE IF NOT EXISTS " + credential
-				+ " (USER_NAME VARCHAR, " + "  PASSWORD VARCHAR );");
+		try
+		{
+			userDB.execSQL("DROP TABLE "+table_Name);	
+			userDB.execSQL("CREATE TABLE " + table_Name + " (USER_NAME VARCHAR, " + "  PASSWORD VARCHAR, " + "  EMAIL VARCHAR );");
+		}
+		catch(Exception e)
+		{	
+			Log.i(tag, "#### createTable error ###" + e.getMessage());
+		}
 	}
 
-	private void insertData(String usernamae, String password) {
-		userDB.execSQL("INSERT INTO " + credential + " Values ('" + usernamae
-				+ "','" + password + "');");
-
-		userDB.execSQL("INSERT INTO " + credential + " Values ('aaa','bbb');");
+	private void insertData(String usernamae, String password, String email) {
+		
+		userDB.execSQL("INSERT INTO " + table_Name + " Values ('" + usernamae + "','" + password + "','" + email + "');");
 	}
 
 //	@Override
