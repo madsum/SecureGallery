@@ -2,6 +2,7 @@ package fi.masum.securegallery;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ public class RegisterUser extends Activity {
 	private String table_Name = "user";
 	private String db_name = "login";
 	private String tag = "masum";
+	private Cursor cursor = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +54,7 @@ public class RegisterUser extends Activity {
 
 				try {
 					insertData(_username, _password, _email);
+					//lookupData();
 
 				} catch (SQLiteException ex) {
 					Log.i(tag, "#### insert error ###" + ex.getMessage());
@@ -85,8 +88,8 @@ public class RegisterUser extends Activity {
 	private void createTable() {
 		try
 		{
-			userDB.execSQL("DROP TABLE "+table_Name);	
-			userDB.execSQL("CREATE TABLE " + table_Name + " (USER_NAME VARCHAR, " + "  PASSWORD VARCHAR, " + "  EMAIL VARCHAR );");
+			//userDB.execSQL("DROP TABLE "+table_Name);	
+			userDB.execSQL("CREATE TABLE IF NOT EXISTS " + table_Name + " (USER_NAME VARCHAR, " + "  PASSWORD VARCHAR, " + "  EMAIL VARCHAR );");
 		}
 		catch(Exception e)
 		{	
@@ -97,6 +100,21 @@ public class RegisterUser extends Activity {
 	private void insertData(String usernamae, String password, String email) {
 		
 		userDB.execSQL("INSERT INTO " + table_Name + " Values ('" + usernamae + "','" + password + "','" + email + "');");
+	}
+	
+	private void lookupData() {
+		cursor = userDB.rawQuery("SELECT USER_NAME, PASSWORD FROM "
+				+ table_Name, null);
+
+		Log.e(getClass().getSimpleName(), "#### here i'm!!");
+
+		if (cursor != null) {
+			if (cursor.moveToFirst()) {
+				String username = cursor.getString(cursor.getColumnIndex("USER_NAME"));
+				String password = cursor.getString(cursor.getColumnIndex("PASSWORD"));
+			}
+			cursor.close();
+		}
 	}
 
 //	@Override

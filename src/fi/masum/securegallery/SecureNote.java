@@ -72,6 +72,7 @@ public class SecureNote extends Activity {
 		Button btnLogin = (Button) findViewById(R.id.btnLogin);
 
 		btnLogin.setOnClickListener(new OnClickListener() {
+			
 
 			@Override
 			public void onClick(View v) {
@@ -93,8 +94,9 @@ public class SecureNote extends Activity {
 					EditText txtPassword = (EditText) findViewById(R.id.txtPassword);
 					txtPassword.setText("");
 
-//					Intent startNewActivityOpen = new Intent(SecureNote.this,
-//							NotesList.class);
+					Intent startNewActivityOpen = new Intent(SecureNote.this,
+							RecoverPass.class);
+					startActivity(startNewActivityOpen);
 
 					try {
 //						startActivity(startNewActivityOpen);

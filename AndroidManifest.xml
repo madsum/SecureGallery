@@ -28,6 +28,10 @@
             android:name="fi.masum.securegallery.SecureNote"
             android:label="@string/title_activity_secure_note" >
         </activity>
+        <activity
+            android:name="fi.masum.securegallery.RecoverPass"
+            android:label="@string/title_activity_recover_pass" >
+        </activity>
     </application>
 
 </manifest>

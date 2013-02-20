@@ -16,5 +16,7 @@
     <string name="login_">"Login: "</string>
     <string name="enter">Enter</string>
     <string name="email_">"Email: "</string>
+    <string name="title_activity_recover_pass">Recover Password</string>
+    <string name="_send">Send</string>
 
 </resources>
