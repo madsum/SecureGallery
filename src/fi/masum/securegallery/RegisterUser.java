@@ -13,20 +13,58 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
+//import android.os.Bundle;
 
 public class RegisterUser extends Activity {
 
 	private SQLiteDatabase userDB = null;
 	private String table_Name = "user";
 	private String db_name = "login";
+	private String db_path = "/data/data/fi.masum.securegallery/databases/";
 	private String tag = "masum";
+	private static boolean test = true;
 	private Cursor cursor = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.register_user);
+		
+		if (test)
+		{
+			if(this.getApplicationContext().deleteDatabase(db_name))
+			{
+				
+				Log.i(tag, "delete db succeeed!");
+			}
+			else
+			{
+				Log.i(tag, "delete db faild!");
+				
+			}
+			test = false;
+		}
 
+		// if (test) {
+		// SecureNote.this.deleteDatabase(db_name);
+		// File dir = getFilesDir();
+		// File file = new File(db_path, "data");
+		// boolean deleted = file.delete();
+		// test = false;
+		// }
+
+		
+		if (checkDataBase()) {
+			// I have database so just login user
+			Log.i(tag, "yes DB. Lets login then");
+			finish();
+			Intent startNewActivityOpen = new Intent(RegisterUser.this,
+					SecureNote.class);
+			startActivity(startNewActivityOpen);
+			//setContentView(R.layout.secure_note);
+			//LoginUser();
+		}
+		
 		try {
 			userDB = this.openOrCreateDatabase(db_name, MODE_PRIVATE, null);
 			createTable();
@@ -41,7 +79,7 @@ public class RegisterUser extends Activity {
 		final EditText txtPassword = (EditText) findViewById(R.id.txtPassword);
 		final EditText txtEmail = (EditText) findViewById(R.id.txtEmail);
 
-		Button btnSubmit = (Button) findViewById(R.id.btnSubmit);
+		Button btnSubmit = (Button) findViewById(R.id.btnLogin);
 
 		btnSubmit.setOnClickListener(new OnClickListener() {
 
@@ -61,11 +99,10 @@ public class RegisterUser extends Activity {
 				} finally {
 					userDB.close();
 				}
-				
-				Intent startNewActivityOpen = new Intent(RegisterUser.this,
-						Login.class);
-				startActivity(startNewActivityOpen);
 				finish();
+				Intent startNewActivityOpen = new Intent(RegisterUser.this,
+						SecureNote.class);
+				startActivity(startNewActivityOpen);
 
 			}
 		});
@@ -76,10 +113,11 @@ public class RegisterUser extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(Intent.ACTION_MAIN);
-				intent.addCategory(Intent.CATEGORY_HOME);
-				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				startActivity(intent);
+
+				Intent startNewActivityOpen = new Intent(RegisterUser.this,
+						SecureNote.class);
+				startActivity(startNewActivityOpen);
+
 			}
 		});
 	}
@@ -115,4 +153,24 @@ public class RegisterUser extends Activity {
 			cursor.close();
 		}
 	}
+
+	private boolean checkDataBase() {
+		SQLiteDatabase checkDB = null;
+		try {
+			checkDB = SQLiteDatabase.openDatabase(db_path + db_name, null,
+					SQLiteDatabase.OPEN_READONLY);
+			checkDB.close();
+		} catch (SQLiteException e) {
+			Log.i(tag, "path: " + db_path + db_name + "\n" + e.getMessage());
+		}
+		return checkDB != null ? true : false;
+	}
+
+//	@Override
+//	public boolean onCreateOptionsMenu(Menu menu) {
+//		// Inflate the menu; this adds items to the action bar if it is present.
+//		getMenuInflater().inflate(R.menu.register_user, menu);
+//		return true;
+//	}
+
 }

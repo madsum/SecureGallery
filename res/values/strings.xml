@@ -15,15 +15,18 @@
     <string name="title_activity_secure_note">SecureNote</string>
     <string name="login_">"Login: "</string>
     <string name="enter">Enter</string>
-<<<<<<< HEAD
     <string name="email_">"Email: "</string>
     <string name="title_activity_recover_pass">Recover Password</string>
     <string name="_send">Send</string>
-=======
-    <string name="_new_user">Register a new user</string>
-    <string name="email_">"Email: "</string>
-    <string name="title_activity_login">Login</string>
-    <string name="login">Login</string>
->>>>>>> Update to FrameLayout. All activity is FrameLayout now.
+    <string name="title_activity_sign_in">SignInActivity</string>
+    <string name="welcome">welcome</string>
+    <string name="begin">begin</string>
+    <string name="sign_in">sign_in</string>
+    <string name="sign_out">sign_out</string>
+    <string name="title_activity_file_picker">FilePicker</string>
+    <string name="no_files">no files</string>
+    <string name="no_skydrive_items">no skydrive items</string>
+    <string name="skydrive_icon_description">skydrive icon description</string>
+    <string name="title_activity_sky_drive">SkyDriveActivity</string>
 
 </resources>
