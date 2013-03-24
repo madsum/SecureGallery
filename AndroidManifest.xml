@@ -27,10 +27,13 @@
         <activity
             android:name="fi.masum.securegallery.Login"
             android:label="@string/title_activity_login" >
+<<<<<<< HEAD
         </activity>
         <activity
             android:name="fi.masum.securegallery.RecoverPass"
             android:label="@string/title_activity_recover_pass" >
+=======
+>>>>>>> 4a7b6e99c5ff8da8d06a68ea09f1427efcd7aa50
         </activity>
     </application>
 

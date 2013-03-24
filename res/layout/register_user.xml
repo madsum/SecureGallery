@@ -18,6 +18,7 @@
  
  </TextView>
 
+<<<<<<< HEAD
  <TextView 
  android:text="@string/user_name_"
  android:id="@+id/TextView01" 
@@ -34,6 +35,10 @@
  
  <TextView 
  android:text="@string/password_"
+=======
+ <TextView 
+ android:text="@string/user_name_"
+>>>>>>> 4a7b6e99c5ff8da8d06a68ea09f1427efcd7aa50
  android:id="@+id/TextView01" 
  android:layout_width="fill_parent" 
  android:layout_height="wrap_content">
@@ -46,6 +51,7 @@
      android:password="true"
      android:text="" >
  </EditText>
+<<<<<<< HEAD
 <<<<<<< HEAD
 </TableRow>
 
@@ -61,6 +67,13 @@
  android:id="@+id/TextView01" 
  android:layout_width="fill_parent" 
 >>>>>>> Update to FrameLayout. All activity is FrameLayout now.
+=======
+ 
+ <TextView 
+ android:text="@string/password_"
+ android:id="@+id/TextView01" 
+ android:layout_width="fill_parent" 
+>>>>>>> 4a7b6e99c5ff8da8d06a68ea09f1427efcd7aa50
  android:layout_height="wrap_content">
  </TextView>
  
@@ -70,12 +83,29 @@
      android:layout_height="wrap_content"
      android:text="" >
 <<<<<<< HEAD
+<<<<<<< HEAD
 
  </EditText>
 </TableRow>
 
 <TableRow>
 =======
+=======
+ </EditText>
+ 
+<TextView 
+ android:text="@string/email_"
+ android:id="@+id/TextView01" 
+ android:layout_width="fill_parent" 
+ android:layout_height="wrap_content">
+ </TextView>
+ 
+ <EditText
+     android:id="@+id/txtEmail"
+     android:layout_width="fill_parent"
+     android:layout_height="wrap_content"
+     android:text="" >
+>>>>>>> 4a7b6e99c5ff8da8d06a68ea09f1427efcd7aa50
  </EditText>
   
  
@@ -83,7 +113,10 @@
      android:orientation="horizontal"
      android:layout_width="fill_parent"
      android:layout_height="fill_parent">
+<<<<<<< HEAD
 >>>>>>> Update to FrameLayout. All activity is FrameLayout now.
+=======
+>>>>>>> 4a7b6e99c5ff8da8d06a68ea09f1427efcd7aa50
 
  <Button
      android:id="@+id/btnCancel"
@@ -101,4 +134,8 @@
  </LinearLayout>
     
 </FrameLayout>
+<<<<<<< HEAD
  
+=======
+ 
+>>>>>>> 4a7b6e99c5ff8da8d06a68ea09f1427efcd7aa50

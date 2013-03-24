@@ -16,14 +16,20 @@
     <string name="login_">"Login: "</string>
     <string name="enter">Enter</string>
 <<<<<<< HEAD
+<<<<<<< HEAD
     <string name="email_">"Email: "</string>
     <string name="title_activity_recover_pass">Recover Password</string>
     <string name="_send">Send</string>
 =======
+=======
+>>>>>>> 4a7b6e99c5ff8da8d06a68ea09f1427efcd7aa50
     <string name="_new_user">Register a new user</string>
     <string name="email_">"Email: "</string>
     <string name="title_activity_login">Login</string>
     <string name="login">Login</string>
+<<<<<<< HEAD
 >>>>>>> Update to FrameLayout. All activity is FrameLayout now.
+=======
+>>>>>>> 4a7b6e99c5ff8da8d06a68ea09f1427efcd7aa50
 
 </resources>

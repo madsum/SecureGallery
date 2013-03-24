@@ -100,6 +100,7 @@ public class RegisterUser extends Activity {
 		
 		userDB.execSQL("INSERT INTO " + table_Name + " Values ('" + usernamae + "','" + password + "','" + email + "');");
 	}
+<<<<<<< HEAD
 	
 	private void lookupData() {
 		cursor = userDB.rawQuery("SELECT USER_NAME, PASSWORD FROM "
@@ -115,4 +116,6 @@ public class RegisterUser extends Activity {
 			cursor.close();
 		}
 	}
+=======
+>>>>>>> 4a7b6e99c5ff8da8d06a68ea09f1427efcd7aa50
 }
