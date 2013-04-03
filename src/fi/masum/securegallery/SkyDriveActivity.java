@@ -384,7 +384,7 @@ public class SkyDriveActivity extends ListActivity {
         mPhotoAdapter = new SkyDriveListAdapter(this);
         setListAdapter(mPhotoAdapter);
 
-        LiveSdkSampleApplication app = (LiveSdkSampleApplication) getApplication();
+        SkyApplication app = (SkyApplication) getApplication();
         mClient = app.getConnectClient();
     }
 

@@ -10,7 +10,7 @@ import com.microsoft.live.LiveAuthClient;
 import com.microsoft.live.LiveConnectClient;
 import com.microsoft.live.LiveConnectSession;
 
-public class LiveSdkSampleApplication extends Application {
+public class SkyApplication extends Application {
 
     private LiveAuthClient mAuthClient;
     private LiveConnectClient mConnectClient;

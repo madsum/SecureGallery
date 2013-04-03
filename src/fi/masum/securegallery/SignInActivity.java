@@ -25,7 +25,7 @@ import com.microsoft.live.LiveStatus;
 
 
 public class SignInActivity extends Activity {
-    private LiveSdkSampleApplication mApp;
+    private SkyApplication mApp;
     private LiveAuthClient mAuthClient;
     private ProgressDialog mInitializeDialog;
     private Button mSignInButton;
@@ -37,7 +37,7 @@ public class SignInActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.signin);
 
-        mApp = (LiveSdkSampleApplication) getApplication();
+        mApp = (SkyApplication) getApplication();
         mAuthClient = new LiveAuthClient(mApp, Config.CLIENT_ID);
         mApp.setAuthClient(mAuthClient);
         //showSignIn();
