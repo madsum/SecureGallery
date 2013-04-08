@@ -30,20 +30,20 @@ public class RegisterUser extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.register_user);
 		
-		if (test)
-		{
-			if(this.getApplicationContext().deleteDatabase(db_name))
-			{
-				
-				Log.i(tag, "delete db succeeed!");
-			}
-			else
-			{
-				Log.i(tag, "delete db faild!");
-				
-			}
-			test = false;
-		}
+//		if (test)
+//		{
+//			if(this.getApplicationContext().deleteDatabase(db_name))
+//			{
+//				
+//				Log.i(tag, "delete db succeeed!");
+//			}
+//			else
+//			{
+//				Log.i(tag, "delete db faild!");
+//				
+//			}
+//			test = false;
+//		}
 
 		// if (test) {
 		// SecureNote.this.deleteDatabase(db_name);

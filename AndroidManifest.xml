@@ -49,6 +49,10 @@
             android:name="fi.masum.securegallery.SkyDriveActivity"
             android:label="@string/title_activity_sky_drive" >
         </activity>
+        <activity
+            android:name="fi.masum.securegallery.CameraActivity"
+            android:label="@string/title_activity_camera" >
+        </activity>
     </application>
 
 </manifest>

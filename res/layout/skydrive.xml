@@ -17,5 +17,11 @@
 	    android:layout_width="fill_parent"
 	    android:layout_height="fill_parent"
 	    android:text="@string/no_skydrive_items" />
+ 	<Button
+     android:id="@+id/btnCamera"
+     android:text="@string/take_photo"
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+     />
 
 </LinearLayout>

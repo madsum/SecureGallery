@@ -59,6 +59,169 @@ import fi.masum.securegallery.SkyDrivePhoto.Image;
 //import fi.masum.securegallery.LiveSdkSampleApplication;
 
 public class SkyDriveActivity extends ListActivity {
+	
+    public static final String EXTRA_PATH = "path";
+
+    private static final int DIALOG_DOWNLOAD_ID = 0;
+    private static final String HOME_FOLDER = "me/skydrive";
+
+    private LiveConnectClient mClient;
+    private SkyDriveListAdapter mPhotoAdapter;
+    public String mCurrentFolderId;
+    private Stack<String> mPrevFolderIds;
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == FilePicker.PICK_FILE_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                String filePath = data.getStringExtra(FilePicker.EXTRA_FILE_PATH);
+
+                if (TextUtils.isEmpty(filePath)) {
+                    showToast("No file was choosen.");
+                    return;
+                }
+
+                File file = new File(filePath);
+
+                final ProgressDialog uploadProgressDialog =
+                        new ProgressDialog(SkyDriveActivity.this);
+                uploadProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                uploadProgressDialog.setMessage("Uploading...");
+                uploadProgressDialog.setCancelable(true);
+                uploadProgressDialog.show();
+
+                final LiveOperation operation =
+                        mClient.uploadAsync(mCurrentFolderId,
+                                            file.getName(),
+                                            file,
+                                            new LiveUploadOperationListener() {
+                    @Override
+                    public void onUploadProgress(int totalBytes,
+                                                 int bytesRemaining,
+                                                 LiveOperation operation) {
+                        int percentCompleted = computePrecentCompleted(totalBytes, bytesRemaining);
+
+                        uploadProgressDialog.setProgress(percentCompleted);
+                    }
+
+                    @Override
+                    public void onUploadFailed(LiveOperationException exception,
+                                               LiveOperation operation) {
+                        uploadProgressDialog.dismiss();
+                        showToast(exception.getMessage());
+                    }
+
+                    @Override
+                    public void onUploadCompleted(LiveOperation operation) {
+                        uploadProgressDialog.dismiss();
+
+                        JSONObject result = operation.getResult();
+                        if (result.has(JsonKeys.ERROR)) {
+                            JSONObject error = result.optJSONObject(JsonKeys.ERROR);
+                            String message = error.optString(JsonKeys.MESSAGE);
+                            String code = error.optString(JsonKeys.CODE);
+                            showToast(code + ": " + message);
+                            return;
+                        }
+
+                        loadFolder(mCurrentFolderId);
+                    }
+                });
+
+                uploadProgressDialog.setOnCancelListener(new OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        operation.cancel();
+                    }
+                });
+            }
+        }
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.skydrive);
+        
+		Button btnSend = (Button) findViewById(R.id.btnCamera);
+		
+		btnSend.setOnClickListener(new OnClickListener() {
+			
+			final EditText txtEmail = (EditText) findViewById(R.id.txtEmail);
+			@Override
+			public void onClick(View v) {
+				
+				Intent startNewActivityOpen = new Intent(SkyDriveActivity.this,
+						CameraActivity.class);
+				startActivity(startNewActivityOpen);
+				//String _email = txtEmail.getText().toString();
+			}
+			});        
+
+        mPrevFolderIds = new Stack<String>();
+
+        ListView lv = getListView();
+        lv.setTextFilterEnabled(true);
+        lv.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                SkyDriveObject skyDriveObj = (SkyDriveObject) parent.getItemAtPosition(position);
+
+                skyDriveObj.accept(new Visitor() {
+                    @Override
+                    public void visit(SkyDriveAlbum album) {
+                        mPrevFolderIds.push(mCurrentFolderId);
+                        loadFolder(album.getId());
+                    }
+
+                    @Override
+                    public void visit(SkyDrivePhoto photo) {
+                        ViewPhotoDialog dialog =
+                                new ViewPhotoDialog(SkyDriveActivity.this, photo);
+                        dialog.setOwnerActivity(SkyDriveActivity.this);
+                        dialog.show();
+                    }
+
+                    @Override
+                    public void visit(SkyDriveFolder folder) {
+                        mPrevFolderIds.push(mCurrentFolderId);
+                        loadFolder(folder.getId());
+                    }
+
+                    @SuppressLint("NewApi") @Override
+                    public void visit(SkyDriveFile file) {
+                        Bundle b = new Bundle();
+                        showDialog(DIALOG_DOWNLOAD_ID, b);
+                    }
+
+                });
+            }
+        });
+
+        mPhotoAdapter = new SkyDriveListAdapter(this);
+        setListAdapter(mPhotoAdapter);
+
+        SkyApplication app = (SkyApplication) getApplication();
+        mClient = app.getConnectClient();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            // if prev folders is empty, send the back button to the TabView activity.
+            if (mPrevFolderIds.isEmpty()) {
+                //return false;
+            	return super.onKeyDown(keyCode, event);
+            }
+
+            loadFolder(mPrevFolderIds.pop());
+            return true;
+        } else {
+            return super.onKeyDown(keyCode, event);
+        }
+    }
+	
+	
 
     private class SkyDriveListAdapter extends BaseAdapter {
         private final LayoutInflater mInflater;
@@ -258,151 +421,6 @@ public class SkyDriveActivity extends ListActivity {
         }
     }
 
-    public static final String EXTRA_PATH = "path";
-
-    private static final int DIALOG_DOWNLOAD_ID = 0;
-    private static final String HOME_FOLDER = "me/skydrive";
-
-    private LiveConnectClient mClient;
-    private SkyDriveListAdapter mPhotoAdapter;
-    private String mCurrentFolderId;
-    private Stack<String> mPrevFolderIds;
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == FilePicker.PICK_FILE_REQUEST) {
-            if (resultCode == RESULT_OK) {
-                String filePath = data.getStringExtra(FilePicker.EXTRA_FILE_PATH);
-
-                if (TextUtils.isEmpty(filePath)) {
-                    showToast("No file was choosen.");
-                    return;
-                }
-
-                File file = new File(filePath);
-
-                final ProgressDialog uploadProgressDialog =
-                        new ProgressDialog(SkyDriveActivity.this);
-                uploadProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                uploadProgressDialog.setMessage("Uploading...");
-                uploadProgressDialog.setCancelable(true);
-                uploadProgressDialog.show();
-
-                final LiveOperation operation =
-                        mClient.uploadAsync(mCurrentFolderId,
-                                            file.getName(),
-                                            file,
-                                            new LiveUploadOperationListener() {
-                    @Override
-                    public void onUploadProgress(int totalBytes,
-                                                 int bytesRemaining,
-                                                 LiveOperation operation) {
-                        int percentCompleted = computePrecentCompleted(totalBytes, bytesRemaining);
-
-                        uploadProgressDialog.setProgress(percentCompleted);
-                    }
-
-                    @Override
-                    public void onUploadFailed(LiveOperationException exception,
-                                               LiveOperation operation) {
-                        uploadProgressDialog.dismiss();
-                        showToast(exception.getMessage());
-                    }
-
-                    @Override
-                    public void onUploadCompleted(LiveOperation operation) {
-                        uploadProgressDialog.dismiss();
-
-                        JSONObject result = operation.getResult();
-                        if (result.has(JsonKeys.ERROR)) {
-                            JSONObject error = result.optJSONObject(JsonKeys.ERROR);
-                            String message = error.optString(JsonKeys.MESSAGE);
-                            String code = error.optString(JsonKeys.CODE);
-                            showToast(code + ": " + message);
-                            return;
-                        }
-
-                        loadFolder(mCurrentFolderId);
-                    }
-                });
-
-                uploadProgressDialog.setOnCancelListener(new OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialog) {
-                        operation.cancel();
-                    }
-                });
-            }
-        }
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.skydrive);
-
-        mPrevFolderIds = new Stack<String>();
-
-        ListView lv = getListView();
-        lv.setTextFilterEnabled(true);
-        lv.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                SkyDriveObject skyDriveObj = (SkyDriveObject) parent.getItemAtPosition(position);
-
-                skyDriveObj.accept(new Visitor() {
-                    @Override
-                    public void visit(SkyDriveAlbum album) {
-                        mPrevFolderIds.push(mCurrentFolderId);
-                        loadFolder(album.getId());
-                    }
-
-                    @Override
-                    public void visit(SkyDrivePhoto photo) {
-                        ViewPhotoDialog dialog =
-                                new ViewPhotoDialog(SkyDriveActivity.this, photo);
-                        dialog.setOwnerActivity(SkyDriveActivity.this);
-                        dialog.show();
-                    }
-
-                    @Override
-                    public void visit(SkyDriveFolder folder) {
-                        mPrevFolderIds.push(mCurrentFolderId);
-                        loadFolder(folder.getId());
-                    }
-
-                    @SuppressLint("NewApi") @Override
-                    public void visit(SkyDriveFile file) {
-                        Bundle b = new Bundle();
-                        showDialog(DIALOG_DOWNLOAD_ID, b);
-                    }
-
-                });
-            }
-        });
-
-        mPhotoAdapter = new SkyDriveListAdapter(this);
-        setListAdapter(mPhotoAdapter);
-
-        SkyApplication app = (SkyApplication) getApplication();
-        mClient = app.getConnectClient();
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            // if prev folders is empty, send the back button to the TabView activity.
-            if (mPrevFolderIds.isEmpty()) {
-                //return false;
-            	return super.onKeyDown(keyCode, event);
-            }
-
-            loadFolder(mPrevFolderIds.pop());
-            return true;
-        } else {
-            return super.onKeyDown(keyCode, event);
-        }
-    }
 
     @Override
     protected Dialog onCreateDialog(final int id, final Bundle bundle) {
@@ -492,7 +510,7 @@ public class SkyDriveActivity extends ListActivity {
         loadFolder(HOME_FOLDER);
     }
 
-    private void loadFolder(String folderId) {
+    public void loadFolder(String folderId) {
         assert folderId != null;
         mCurrentFolderId = folderId;
 
@@ -544,5 +562,62 @@ public class SkyDriveActivity extends ListActivity {
 
     private ProgressDialog showProgressDialog(String title, String message, boolean indeterminate) {
         return ProgressDialog.show(this, title, message, indeterminate);
+    }
+    
+    public void uploadPhoto(String imagePath)
+    {    	
+        File file = new File(imagePath);
+
+        final ProgressDialog uploadProgressDialog =
+        		 new ProgressDialog(SkyDriveActivity.this);
+        uploadProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        uploadProgressDialog.setMessage("Uploading...");
+        uploadProgressDialog.setCancelable(true);
+        uploadProgressDialog.show();
+
+        final LiveOperation operation =
+                mClient.uploadAsync(mCurrentFolderId,
+                                    file.getName(),
+                                    file,
+                                    new LiveUploadOperationListener() {
+            @Override
+            public void onUploadProgress(int totalBytes,
+                                         int bytesRemaining,
+                                         LiveOperation operation) {
+                int percentCompleted = computePrecentCompleted(totalBytes, bytesRemaining);
+
+                uploadProgressDialog.setProgress(percentCompleted);
+            }
+
+            @Override
+            public void onUploadFailed(LiveOperationException exception,
+                                       LiveOperation operation) {
+                uploadProgressDialog.dismiss();
+                showToast(exception.getMessage());
+            }
+
+            @Override
+            public void onUploadCompleted(LiveOperation operation) {
+                uploadProgressDialog.dismiss();
+
+                JSONObject result = operation.getResult();
+                if (result.has(JsonKeys.ERROR)) {
+                    JSONObject error = result.optJSONObject(JsonKeys.ERROR);
+                    String message = error.optString(JsonKeys.MESSAGE);
+                    String code = error.optString(JsonKeys.CODE);
+                    showToast(code + ": " + message);
+                    return;
+                }
+
+                loadFolder(mCurrentFolderId);
+            }
+        });
+
+        uploadProgressDialog.setOnCancelListener(new OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                operation.cancel();
+            }
+        });   
     }
 }

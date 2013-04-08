@@ -28,5 +28,11 @@
     <string name="no_skydrive_items">no skydrive items</string>
     <string name="skydrive_icon_description">skydrive icon description</string>
     <string name="title_activity_sky_drive">SkyDriveActivity</string>
+    <string name="btnintend">btnIntend</string>
+    <string name="btnintends">btnIntendS</string>
+    <string name="btnintendv">btnIntendV</string>
+    <string name="take_photo">Take Photo</string>
+    <string name="title_activity_camera">CameraActivity</string>
+    <string name="action_settings">Settings</string>
 
 </resources>
