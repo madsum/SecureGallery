@@ -3,14 +3,14 @@ package fi.masum.securegallery;
 import android.app.Activity;
 import android.content.DialogInterface;
 
-import fi.masum.securegallery.BaseDialog.OnDismissListener;
+import fi.masum.securegallery.BaseDialog.OnBaseDismissListener;
 
 public class YesNoDialog extends BaseDialog 
 {
 	public int ChoosedButton = 0;
 	public String BodyText;
 	
-	public YesNoDialog(Activity activity, OnDismissListener dismissListener, String title, String bodyText)
+	public YesNoDialog(Activity activity, OnBaseDismissListener dismissListener, String title, String bodyText)
 	{
 		super(activity, dismissListener, title, bodyText);
 		BodyText = bodyText;

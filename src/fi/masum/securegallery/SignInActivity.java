@@ -45,10 +45,10 @@ import android.content.Intent;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import fi.masum.securegallery.BaseDialog.OnDismissListener;
+import fi.masum.securegallery.BaseDialog.OnBaseDismissListener;
 
 
-public class SignInActivity extends Activity implements OnDismissListener {
+public class SignInActivity extends Activity implements OnBaseDismissListener {
     private SkyApplication mApp;
     private LiveAuthClient mAuthClient;
     private ProgressDialog mInitializeDialog;
@@ -68,8 +68,7 @@ public class SignInActivity extends Activity implements OnDismissListener {
 	private SkyDriveActivity mParent;
 	private Context context;
 	private String[] mOptions = {"Save in private gallery", "Save in photo gallery"};
-	private ChoiceDialog mChoiceDlg;
-	private YesNoDialog mYesNoDlg;    
+	private ChoiceDialog mChoiceDlg;  
 	private File mTempFile;
 	
     @Override
@@ -89,9 +88,7 @@ public class SignInActivity extends Activity implements OnDismissListener {
 		mImageView = (ImageView) findViewById(R.id.imageView1);
 		mImageBitmap = null;
 		mChoiceDlg = new ChoiceDialog(this, mOptions, this, "save phtoto", "");
-		mYesNoDlg = new YesNoDialog(this, this, "Uplaod phtoto", "Do you want to uplaod to Sky Drive?");
-
-        
+		
         showSignIn();
         
             mSignInButton.setOnClickListener(new OnClickListener() {
@@ -142,9 +139,7 @@ public class SignInActivity extends Activity implements OnDismissListener {
                     });
                 }
             });
-            
-    		
-    		
+                		
     		Button.OnClickListener mTakePicSOnClickListener = new Button.OnClickListener() {
     				@Override
     				public void onClick(View v) {
@@ -187,7 +182,9 @@ public class SignInActivity extends Activity implements OnDismissListener {
         mBeginTextView.setVisibility(View.VISIBLE);
     }
     
-
+    // Below is all camera implementation. 
+    // It will be better to define a new activity for camera. For the time being let it as is 
+    // If I have available time I will upadte later.
 
 	private void dispatchTakePictureIntent(int actionCode) 
 	{
@@ -207,13 +204,11 @@ public class SignInActivity extends Activity implements OnDismissListener {
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) 
-	{
-		
+	{	
 		if( requestCode == ACTION_TAKE_PHOTO && resultCode == RESULT_OK)
 		{
 			handleCameraPhoto(data);		
 		}
-		
 	}
 
 	// Some lifecycle callbacks so that the image can survive orientation change
@@ -233,16 +228,14 @@ public class SignInActivity extends Activity implements OnDismissListener {
 		mImageView.setImageBitmap(mImageBitmap);
 		mImageView.setVisibility(
 				savedInstanceState.getBoolean(IMAGEVIEW_VISIBILITY_STORAGE_KEY) ? 
-						ImageView.VISIBLE : ImageView.INVISIBLE
-		);
-
+						ImageView.VISIBLE : ImageView.INVISIBLE);
 	}
+	
 	/**
 	 * Indicates whether the specified action can be used as an intent. This
 	 * method queries the package manager for installed packages that can
 	 * respond to an intent with the specified action. If no suitable package is
-	 * found, this method returns false.*/
-	
+	 * found, this method returns false.*/	
 	public static boolean isIntentAvailable(Context context, String action) 
 	{
 		final PackageManager packageManager = context.getPackageManager();
@@ -251,10 +244,7 @@ public class SignInActivity extends Activity implements OnDismissListener {
 			packageManager.queryIntentActivities(intent,
 					PackageManager.MATCH_DEFAULT_ONLY);
 		return list.size() > 0;
-	}	
-	
-	
-	
+	}		
 
 	private void handleCameraPhoto(Intent intent) 
 	{
@@ -265,7 +255,7 @@ public class SignInActivity extends Activity implements OnDismissListener {
 	}
 
 	public void savePrivatePic() {
-	    String fileName = new SimpleDateFormat("dd-MM-yyyy_HH:mm:ss").format(new Date())+ "_img.jpg";
+	    String fileName = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss").format(new Date())+ "_img.jpg";
 	    String data = "/data/data/fi.masum.securegallery/files/";
 	    FileOutputStream fos;
 		try 
@@ -287,7 +277,7 @@ public class SignInActivity extends Activity implements OnDismissListener {
 	
 	public void savePublicPic() 
 	{
-		String timeStamp = new SimpleDateFormat("dd-MM-yyyy_HH:mm:ss").format(new Date());
+		String timeStamp = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss").format(new Date());
 		String imageFileName = "IMG_" + timeStamp + "_";
 		File outputDir = context.getCacheDir(); // context being the Activity pointer
 		try
@@ -299,8 +289,7 @@ public class SignInActivity extends Activity implements OnDismissListener {
 		catch(Exception e)
 		{
 			Log.i("tag", "error: createImageFile "+e.getMessage());
-		}
-						
+		}						
 		galleryAddPic();
 		mImageView.setImageBitmap(mTempImg);
 	}	
@@ -318,7 +307,6 @@ public class SignInActivity extends Activity implements OnDismissListener {
 	{
     	Context context = getApplicationContext();
     	int duration = Toast.LENGTH_LONG;
-
     	Toast toast = Toast.makeText(context, msg, duration);
     	toast.show();
 	}
@@ -326,7 +314,7 @@ public class SignInActivity extends Activity implements OnDismissListener {
 	private File createImageFile() 
 	{
 		// Create an image file name
-		String timeStamp = new SimpleDateFormat("dd-MM-yyyy_HH:mm:ss").format(new Date());
+		String timeStamp = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss").format(new Date());
 		String imageFileName = "IMG_" + timeStamp + "_";
 		Log.i("tag", "timeStamp "+timeStamp+" imageFileName "+imageFileName);
 		// create temp directory to save img
@@ -339,8 +327,7 @@ public class SignInActivity extends Activity implements OnDismissListener {
 		catch(Exception e)
 		{
 			Log.i("tag", "error: createImageFile "+e.getMessage());
-		}
-		
+		}		
 		return mTempFile;
 	}
     
@@ -355,9 +342,7 @@ public class SignInActivity extends Activity implements OnDismissListener {
 	    		if (choiceDialog.SelectedOption == 0 )
 	    			savePrivatePic();
 	    		else if (choiceDialog.SelectedOption == 1)
-	    			savePublicPic();
-	    			
-	    	
+	    			savePublicPic();   	
 	    		showMsg("seleteced option is accepted"+Integer.toString(ret));
 	    		Log.i("tag", " choiceDialog ret = "+"seleteced option is accepted"+Integer.toString(ret));
 	    	}
@@ -366,23 +351,6 @@ public class SignInActivity extends Activity implements OnDismissListener {
 	    		showMsg("seleteced option is cancled "+Integer.toString(ret));
 	    		Log.i("tag", " choiceDialog ret = "+"seleteced option is cancled "+Integer.toString(ret));
 	    	}
-	    	//mYesNoDlg.show();
     	}
-    	else if( dialog.yesNoDialog)
-    	{
-    		YesNoDialog yesDialog = (YesNoDialog)dialog;
-    		
-    		int tt = yesDialog.ChoosedButton;
-    		
-    		if( yesDialog.ChoosedButton == -1)
-    		{
-    			//File photo = new File(mImagePath);
-    			// do uplaod here
-    			//mParent.uploadPhoto(photo.getAbsolutePath());
-    		}
-    			
-    		Log.i("tag", " YesNoDialog ret = "+Integer.toString(tt));
-    		
-    	}    	
     }    
 }

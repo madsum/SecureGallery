@@ -6,14 +6,14 @@ import android.content.DialogInterface;
 
 public abstract class BaseDialog implements DialogInterface.OnClickListener
 {
-	public interface OnDismissListener
+	public interface OnBaseDismissListener
 	{
 		public void onDialogDismissed(BaseDialog dialog);
 	}
 
 	protected AlertDialog.Builder m_Builder;
 	protected Context m_Context;
-	protected OnDismissListener m_DismissListener; 
+	protected OnBaseDismissListener m_DismissListener; 
 	
 	public int RequestCode = 0;
 	public String TitleText;
@@ -25,7 +25,7 @@ public abstract class BaseDialog implements DialogInterface.OnClickListener
 	public boolean yesNoDialog = false;
 
 
-	protected BaseDialog(Context context,  OnDismissListener dismissListener, String title, String bodyText)
+	protected BaseDialog(Context context,  OnBaseDismissListener dismissListener, String title, String bodyText)
 	{
 		this.TitleText = title;
 		this.BodyText = bodyText;

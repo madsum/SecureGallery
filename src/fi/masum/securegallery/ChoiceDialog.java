@@ -9,7 +9,7 @@ public class ChoiceDialog extends BaseDialog
 	public int SelectedOption = -1;
 	
 
-	public ChoiceDialog(Activity activity, String[] options, OnDismissListener dismissListener, String title, String bodyText)
+	public ChoiceDialog(Activity activity, String[] options, OnBaseDismissListener dismissListener, String title, String bodyText)
 	{
 		super(activity, dismissListener, title, bodyText);
 		mOptions = options;

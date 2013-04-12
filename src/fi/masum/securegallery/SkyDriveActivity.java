@@ -1,9 +1,13 @@
 package fi.masum.securegallery;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
@@ -19,12 +23,18 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnDismissListener;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Bitmap.CompressFormat;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,89 +63,41 @@ import com.microsoft.live.LiveUploadOperationListener;
 
 import fi.masum.securegallery.SkyDriveObject.Visitor;
 import fi.masum.securegallery.SkyDrivePhoto.Image;
+import fi.masum.securegallery.BaseDialog.OnBaseDismissListener;
 
-//import fi.masum.securegallery.JsonKeys;
-
-//import fi.masum.securegallery.LiveSdkSampleApplication;
-
-public class SkyDriveActivity extends ListActivity {
+public class SkyDriveActivity extends ListActivity implements OnBaseDismissListener {
 	
     public static final String EXTRA_PATH = "path";
-
     private static final int DIALOG_DOWNLOAD_ID = 0;
     private static final String HOME_FOLDER = "me/skydrive";
-
     private LiveConnectClient mClient;
     private SkyDriveListAdapter mPhotoAdapter;
     public String mCurrentFolderId;
     private Stack<String> mPrevFolderIds;
+    
+	private static final int ACTION_TAKE_PHOTO = 1;
+	private static final String BITMAP_STORAGE_KEY = "viewbitmap";
+	private static final String IMAGEVIEW_VISIBILITY_STORAGE_KEY = "imageviewvisibility";
+	private ImageView mImageView;
+	private Bitmap mImageBitmap;
+	private Bitmap mTempImg;
+	private String mImagePath;
+	private String mCurrentPhotoPath;
+	private SkyDriveActivity mParent;
+	private Context context;
+	private String[] mOptions = {"Save in private gallery", "Save in photo gallery"};
+	private ChoiceDialog mChoiceDlg;
+	private YesNoDialog mYesNoDlg;    
+	private File mTempFile;
+    
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == FilePicker.PICK_FILE_REQUEST) {
-            if (resultCode == RESULT_OK) {
-                String filePath = data.getStringExtra(FilePicker.EXTRA_FILE_PATH);
-
-                if (TextUtils.isEmpty(filePath)) {
-                    showToast("No file was choosen.");
-                    return;
-                }
-
-                File file = new File(filePath);
-
-                final ProgressDialog uploadProgressDialog =
-                        new ProgressDialog(SkyDriveActivity.this);
-                uploadProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                uploadProgressDialog.setMessage("Uploading...");
-                uploadProgressDialog.setCancelable(true);
-                uploadProgressDialog.show();
-
-                final LiveOperation operation =
-                        mClient.uploadAsync(mCurrentFolderId,
-                                            file.getName(),
-                                            file,
-                                            new LiveUploadOperationListener() {
-                    @Override
-                    public void onUploadProgress(int totalBytes,
-                                                 int bytesRemaining,
-                                                 LiveOperation operation) {
-                        int percentCompleted = computePrecentCompleted(totalBytes, bytesRemaining);
-
-                        uploadProgressDialog.setProgress(percentCompleted);
-                    }
-
-                    @Override
-                    public void onUploadFailed(LiveOperationException exception,
-                                               LiveOperation operation) {
-                        uploadProgressDialog.dismiss();
-                        showToast(exception.getMessage());
-                    }
-
-                    @Override
-                    public void onUploadCompleted(LiveOperation operation) {
-                        uploadProgressDialog.dismiss();
-
-                        JSONObject result = operation.getResult();
-                        if (result.has(JsonKeys.ERROR)) {
-                            JSONObject error = result.optJSONObject(JsonKeys.ERROR);
-                            String message = error.optString(JsonKeys.MESSAGE);
-                            String code = error.optString(JsonKeys.CODE);
-                            showToast(code + ": " + message);
-                            return;
-                        }
-
-                        loadFolder(mCurrentFolderId);
-                    }
-                });
-
-                uploadProgressDialog.setOnCancelListener(new OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialog) {
-                        operation.cancel();
-                    }
-                });
-            }
-        }
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) 
+    {        
+		if( requestCode == ACTION_TAKE_PHOTO && resultCode == RESULT_OK)
+		{
+			handleCameraPhoto(data);		
+		}
     }
 
     @Override
@@ -203,6 +165,27 @@ public class SkyDriveActivity extends ListActivity {
 
         SkyApplication app = (SkyApplication) getApplication();
         mClient = app.getConnectClient();
+        
+    	context = this.getApplicationContext();
+		mImageView = (ImageView) findViewById(R.id.imageView1);
+		mImageBitmap = null;
+		mChoiceDlg = new ChoiceDialog(this, mOptions, this, "save phtoto", "");
+		mYesNoDlg = new YesNoDialog(this, this, "Uplaod phtoto", "Do you want to uplaod to Sky Drive?");
+		
+		Button.OnClickListener mTakePicSOnClickListener = new Button.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				dispatchTakePictureIntent(ACTION_TAKE_PHOTO);
+			}
+		};
+
+	Button picBtn = (Button) findViewById(R.id.btnCamera);
+	setBtnListenerOrDisable( 
+			picBtn, 
+			mTakePicSOnClickListener,
+			MediaStore.ACTION_IMAGE_CAPTURE
+	);   		
+        
     }
 
     @Override
@@ -620,4 +603,188 @@ public class SkyDriveActivity extends ListActivity {
             }
         });   
     }
+
+    // Below is all camera implementation. 
+    // It will be better to define a new activity for camera. For the time being let it as is 
+    // If I have available time I will upadte later.
+    
+    private void dispatchTakePictureIntent(int actionCode) 
+	{
+		Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+		startActivityForResult(takePictureIntent, actionCode);
+	}
+	
+	private void setBtnListenerOrDisable(Button btn, Button.OnClickListener onClickListener, String intentName) 
+	{
+		if (isIntentAvailable(this, intentName)) {
+			btn.setOnClickListener(onClickListener);        	
+		} else {
+			btn.setClickable(false);
+		}
+	}	
+    
+    
+	// Some lifecycle callbacks so that the image can survive orientation change
+	@Override
+	protected void onSaveInstanceState(Bundle outState) 
+	{
+		outState.putParcelable(BITMAP_STORAGE_KEY, mImageBitmap);
+		outState.putBoolean(IMAGEVIEW_VISIBILITY_STORAGE_KEY, (mImageBitmap != null) );
+		super.onSaveInstanceState(outState);
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) 
+	{
+		super.onRestoreInstanceState(savedInstanceState);
+		mImageBitmap = savedInstanceState.getParcelable(BITMAP_STORAGE_KEY);
+		mImageView.setImageBitmap(mImageBitmap);
+		mImageView.setVisibility(
+				savedInstanceState.getBoolean(IMAGEVIEW_VISIBILITY_STORAGE_KEY) ? 
+						ImageView.VISIBLE : ImageView.INVISIBLE);
+	}
+    
+    
+	/**
+	 * Indicates whether the specified action can be used as an intent. This
+	 * method queries the package manager for installed packages that can
+	 * respond to an intent with the specified action. If no suitable package is
+	 * found, this method returns false.*/
+	
+	public static boolean isIntentAvailable(Context context, String action) 
+	{
+		final PackageManager packageManager = context.getPackageManager();
+		final Intent intent = new Intent(action);
+		List<ResolveInfo> list =
+			packageManager.queryIntentActivities(intent,
+					PackageManager.MATCH_DEFAULT_ONLY);
+		return list.size() > 0;
+	}		
+    
+	private void handleCameraPhoto(Intent intent) 
+	{
+		Bundle extras = intent.getExtras();
+		mTempImg = (Bitmap) extras.get("data");
+		mImageView.setVisibility(View.VISIBLE);		
+		mChoiceDlg.show();		
+	}
+
+	public void savePrivatePic() {
+	    String fileName = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss").format(new Date())+ "_img.jpg";
+	    mImagePath = "/data/data/fi.masum.securegallery/files/"+fileName;
+	    FileOutputStream fos;
+		try 
+		{
+			if(mTempImg != null)
+			{
+				fos = openFileOutput(fileName, Context.MODE_PRIVATE);
+				mTempImg.compress(CompressFormat.JPEG, 90, fos);
+				fos.close();
+			}
+		    showMsg("Pic save correctly!");
+		} 
+		catch (IOException e) 
+		{
+			Log.i("tag", "erro savePrivatePic: "+e.getMessage());
+		}
+		mImageView.setImageBitmap(mTempImg);
+	}
+	
+	public void savePublicPic() 
+	{
+		String timeStamp = new SimpleDateFormat("dd-MM-yyyy_HH-m-ss").format(new Date());
+		String imageFileName = "IMG_" + timeStamp + "_";
+		File outputDir = context.getCacheDir(); // context being the Activity pointer
+		try
+		{
+		File outputFile = File.createTempFile("prefix", "extension", outputDir);
+		File mTempFile = File.createTempFile(imageFileName, ".jpg", outputDir);
+		mCurrentPhotoPath = mTempFile.getAbsolutePath();
+		}
+		catch(Exception e)
+		{
+			Log.i("tag", "error: createImageFile "+e.getMessage());
+		}
+						
+		galleryAddPic();
+		mImageView.setImageBitmap(mTempImg);
+	}	
+		
+	private void galleryAddPic() 
+	{
+	    Intent mediaScanIntent = new Intent("android.intent.action.MEDIA_SCANNER_SCAN_FILE");
+		File f = new File(mCurrentPhotoPath);
+	    Uri contentUri = Uri.fromFile(f);
+	    mediaScanIntent.setData(contentUri);
+	    this.sendBroadcast(mediaScanIntent);
+	}	
+	
+	void showMsg(String msg)
+	{
+    	Context context = getApplicationContext();
+    	int duration = Toast.LENGTH_LONG;
+    	Toast toast = Toast.makeText(context, msg, duration);
+    	toast.show();
+	}
+	
+	private File createImageFile() 
+	{
+		// Create an image file name
+		String timeStamp = new SimpleDateFormat("dd-MM-yyyy_HH-m-ss").format(new Date());
+		String imageFileName = "IMG_" + timeStamp + "_";
+		Log.i("tag", "timeStamp "+timeStamp+" imageFileName "+imageFileName);
+		// create temp directory to save img
+		File outputDir = context.getCacheDir(); // context being the Activity pointer
+		try
+		{
+		File outputFile = File.createTempFile("prefix", "extension", outputDir);
+		File mTempFile = File.createTempFile(imageFileName, ".jpg", outputDir);
+		}
+		catch(Exception e)
+		{
+			Log.i("tag", "error: createImageFile "+e.getMessage());
+		}		
+		return mTempFile;
+	}
+   
+ 
+    
+    public void onDialogDismissed( BaseDialog dialog)
+    {
+    	if (dialog.choiceDialog)
+    	{
+	    	ChoiceDialog choiceDialog = (ChoiceDialog)dialog;
+	    	int ret = choiceDialog.SelectedOption;    	
+	    	if(choiceDialog.DidAccept)
+	    	{
+	    		if (choiceDialog.SelectedOption == 0 )
+	    			savePrivatePic();
+	    		else if (choiceDialog.SelectedOption == 1)
+	    			savePublicPic();
+	    			
+	    	
+	    		showMsg("seleteced option is accepted"+Integer.toString(ret));
+	    		Log.i("tag", " choiceDialog ret = "+"seleteced option is accepted"+Integer.toString(ret));
+	    	}
+	    	else
+	    	{
+	    		showMsg("seleteced option is cancled "+Integer.toString(ret));
+	    		Log.i("tag", " choiceDialog ret = "+"seleteced option is cancled "+Integer.toString(ret));
+	    	}
+	    	mYesNoDlg.show();
+    	}
+    	else if( dialog.yesNoDialog)
+    	{
+    		YesNoDialog yesDialog = (YesNoDialog)dialog;
+    		
+    		int tt = yesDialog.ChoosedButton;
+    		
+    		if( yesDialog.ChoosedButton == -1)
+    		{
+    			File photo = new File(mImagePath);
+    			uploadPhoto(photo.getAbsolutePath());
+    		}		
+    		Log.i("tag", " YesNoDialog ret = "+Integer.toString(tt));
+    	}    	
+    }    
 }

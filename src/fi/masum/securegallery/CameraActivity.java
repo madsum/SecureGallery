@@ -37,10 +37,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
-import fi.masum.securegallery.BaseDialog.OnDismissListener;
+import fi.masum.securegallery.BaseDialog.OnBaseDismissListener;
 
 
-public class CameraActivity extends Activity implements OnDismissListener {
+public class CameraActivity extends Activity implements OnBaseDismissListener {
 
 	private static final int ACTION_TAKE_PHOTO = 1;
 	private static final String BITMAP_STORAGE_KEY = "viewbitmap";
