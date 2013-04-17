@@ -47,7 +47,7 @@ public class RecoverPass extends Activity {
 					
 					try
 					{
-						Intent startNewActivityOpen = new Intent(RecoverPass.this, SecureNote.class);
+						Intent startNewActivityOpen = new Intent(RecoverPass.this, Login.class);
 						startActivity(startNewActivityOpen);
 					}
 					catch(Exception ex)

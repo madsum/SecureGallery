@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?><LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
@@ -17,15 +16,8 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/welcome"
+        android:visibility="gone"
         android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    <TextView
-        android:id="@+id/beginTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/begin"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:visibility="visible" />
 
     <FrameLayout
         android:layout_width="wrap_content"
@@ -46,12 +38,5 @@
         android:visibility="gone" />"
     
     </FrameLayout>
-    
- 	<Button
-     android:id="@+id/btnCamera"
-     android:text="@string/take_photo"
-     android:layout_width="wrap_content"
-     android:layout_height="wrap_content"
-     />    
-
+  
 </LinearLayout>

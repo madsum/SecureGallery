@@ -23,6 +23,7 @@ public abstract class BaseDialog implements DialogInterface.OnClickListener
 	public boolean DidAccept = false;
 	public boolean choiceDialog = false;
 	public boolean yesNoDialog = false;
+	public boolean active = false; 
 
 
 	protected BaseDialog(Context context,  OnBaseDismissListener dismissListener, String title, String bodyText)
@@ -43,6 +44,7 @@ public abstract class BaseDialog implements DialogInterface.OnClickListener
 
 	public void show()
 	{
+		active = true;
 		this.prepareDialog();
 		AlertDialog dialog = this.m_Builder.create();
 		this.onCreate(dialog);

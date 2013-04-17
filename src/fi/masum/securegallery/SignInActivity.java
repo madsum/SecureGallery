@@ -48,13 +48,14 @@ import android.content.pm.ResolveInfo;
 import fi.masum.securegallery.BaseDialog.OnBaseDismissListener;
 
 
-public class SignInActivity extends Activity implements OnBaseDismissListener {
+public class SignInActivity extends Activity {
     private SkyApplication mApp;
     private LiveAuthClient mAuthClient;
     private ProgressDialog mInitializeDialog;
     private Button mSignInButton;
     private Button mSignOutButton;
     private TextView mBeginTextView;
+    private TextView mWelcomeTextView;
     
 	private static final int ACTION_TAKE_PHOTO = 1;
 	private static final String BITMAP_STORAGE_KEY = "viewbitmap";
@@ -80,14 +81,9 @@ public class SignInActivity extends Activity implements OnBaseDismissListener {
         mAuthClient = new LiveAuthClient(mApp, Config.CLIENT_ID);
         mApp.setAuthClient(mAuthClient);
 
-        mBeginTextView = (TextView) findViewById(R.id.beginTextView);
+        mWelcomeTextView = (TextView) findViewById(R.id.TextView01);
         mSignInButton = (Button) findViewById(R.id.signInButton);
         mSignOutButton = (Button) findViewById(R.id.signOutButton);
-        
-  		context = this.getApplicationContext();
-		mImageView = (ImageView) findViewById(R.id.imageView1);
-		mImageBitmap = null;
-		mChoiceDlg = new ChoiceDialog(this, mOptions, this, "save phtoto", "");
 		
         showSignIn();
         
@@ -103,7 +99,7 @@ public class SignInActivity extends Activity implements OnBaseDismissListener {
                                                    Object userState) {
                             
                         	if (status == LiveStatus.CONNECTED) {
-                                launchMainActivity(session);
+                        		launchSkyDriveActivity(session);
                             } else {
                                 showToast("Login did not connect. Status is " + status + ".");
                             }
@@ -133,26 +129,12 @@ public class SignInActivity extends Activity implements OnBaseDismissListener {
                                                    Object userState) {
                         	mApp.setSession(null);
                         	mApp.setConnectClient(null);
-                        	showToast("I'm done Logout. Now go end it");
+                        	//showToast("I'm done Logout. Now go end it");
                             //getParent().finish();
                         }
                     });
                 }
-            });
-                		
-    		Button.OnClickListener mTakePicSOnClickListener = new Button.OnClickListener() {
-    				@Override
-    				public void onClick(View v) {
-    					dispatchTakePictureIntent(ACTION_TAKE_PHOTO);
-    				}
-    			};
-
-    		Button picBtn = (Button) findViewById(R.id.btnCamera);
-    		setBtnListenerOrDisable( 
-    				picBtn, 
-    				mTakePicSOnClickListener,
-    				MediaStore.ACTION_IMAGE_CAPTURE
-    		);    		    		          
+            });  		    		          
     }
 
     @Override
@@ -162,7 +144,7 @@ public class SignInActivity extends Activity implements OnBaseDismissListener {
         showSignIn();
     }
 
-    private void launchMainActivity(LiveConnectSession session) 
+    private void launchSkyDriveActivity(LiveConnectSession session) 
     {
         assert session != null;
         mApp.setSession(session);
@@ -179,178 +161,5 @@ public class SignInActivity extends Activity implements OnBaseDismissListener {
 
     private void showSignIn() {
         mSignInButton.setVisibility(View.VISIBLE);
-        mBeginTextView.setVisibility(View.VISIBLE);
-    }
-    
-    // Below is all camera implementation. 
-    // It will be better to define a new activity for camera. For the time being let it as is 
-    // If I have available time I will upadte later.
-
-	private void dispatchTakePictureIntent(int actionCode) 
-	{
-
-		Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-		startActivityForResult(takePictureIntent, actionCode);
-	}	
-	
-	private void setBtnListenerOrDisable(Button btn, Button.OnClickListener onClickListener, String intentName) 
-	{
-		if (isIntentAvailable(this, intentName)) {
-			btn.setOnClickListener(onClickListener);        	
-		} else {
-			btn.setClickable(false);
-		}
-	}
-	
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) 
-	{	
-		if( requestCode == ACTION_TAKE_PHOTO && resultCode == RESULT_OK)
-		{
-			handleCameraPhoto(data);		
-		}
-	}
-
-	// Some lifecycle callbacks so that the image can survive orientation change
-	@Override
-	protected void onSaveInstanceState(Bundle outState) 
-	{
-		outState.putParcelable(BITMAP_STORAGE_KEY, mImageBitmap);
-		outState.putBoolean(IMAGEVIEW_VISIBILITY_STORAGE_KEY, (mImageBitmap != null) );
-		super.onSaveInstanceState(outState);
-	}
-
-	@Override
-	protected void onRestoreInstanceState(Bundle savedInstanceState) 
-	{
-		super.onRestoreInstanceState(savedInstanceState);
-		mImageBitmap = savedInstanceState.getParcelable(BITMAP_STORAGE_KEY);
-		mImageView.setImageBitmap(mImageBitmap);
-		mImageView.setVisibility(
-				savedInstanceState.getBoolean(IMAGEVIEW_VISIBILITY_STORAGE_KEY) ? 
-						ImageView.VISIBLE : ImageView.INVISIBLE);
-	}
-	
-	/**
-	 * Indicates whether the specified action can be used as an intent. This
-	 * method queries the package manager for installed packages that can
-	 * respond to an intent with the specified action. If no suitable package is
-	 * found, this method returns false.*/	
-	public static boolean isIntentAvailable(Context context, String action) 
-	{
-		final PackageManager packageManager = context.getPackageManager();
-		final Intent intent = new Intent(action);
-		List<ResolveInfo> list =
-			packageManager.queryIntentActivities(intent,
-					PackageManager.MATCH_DEFAULT_ONLY);
-		return list.size() > 0;
-	}		
-
-	private void handleCameraPhoto(Intent intent) 
-	{
-		Bundle extras = intent.getExtras();
-		mTempImg = (Bitmap) extras.get("data");
-		mImageView.setVisibility(View.VISIBLE);		
-		mChoiceDlg.show();		
-	}
-
-	public void savePrivatePic() {
-	    String fileName = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss").format(new Date())+ "_img.jpg";
-	    String data = "/data/data/fi.masum.securegallery/files/";
-	    FileOutputStream fos;
-		try 
-		{
-			if(mTempImg != null)
-			{
-				fos = openFileOutput(fileName, Context.MODE_PRIVATE);
-				mTempImg.compress(CompressFormat.JPEG, 90, fos);
-				fos.close();
-			}
-		    showMsg("Pic save correctly!");
-		} 
-		catch (IOException e) 
-		{
-			Log.i("tag", "erro savePrivatePic: "+e.getMessage());
-		}
-		mImageView.setImageBitmap(mTempImg);
-	}
-	
-	public void savePublicPic() 
-	{
-		String timeStamp = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss").format(new Date());
-		String imageFileName = "IMG_" + timeStamp + "_";
-		File outputDir = context.getCacheDir(); // context being the Activity pointer
-		try
-		{
-		File outputFile = File.createTempFile("prefix", "extension", outputDir);
-		File mTempFile = File.createTempFile(imageFileName, ".jpg", outputDir);
-		mCurrentPhotoPath = mTempFile.getAbsolutePath();
-		}
-		catch(Exception e)
-		{
-			Log.i("tag", "error: createImageFile "+e.getMessage());
-		}						
-		galleryAddPic();
-		mImageView.setImageBitmap(mTempImg);
-	}	
-		
-	private void galleryAddPic() 
-	{
-	    Intent mediaScanIntent = new Intent("android.intent.action.MEDIA_SCANNER_SCAN_FILE");
-		File f = new File(mCurrentPhotoPath);
-	    Uri contentUri = Uri.fromFile(f);
-	    mediaScanIntent.setData(contentUri);
-	    this.sendBroadcast(mediaScanIntent);
-	}	
-	
-	void showMsg(String msg)
-	{
-    	Context context = getApplicationContext();
-    	int duration = Toast.LENGTH_LONG;
-    	Toast toast = Toast.makeText(context, msg, duration);
-    	toast.show();
-	}
-	
-	private File createImageFile() 
-	{
-		// Create an image file name
-		String timeStamp = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss").format(new Date());
-		String imageFileName = "IMG_" + timeStamp + "_";
-		Log.i("tag", "timeStamp "+timeStamp+" imageFileName "+imageFileName);
-		// create temp directory to save img
-		File outputDir = context.getCacheDir(); // context being the Activity pointer
-		try
-		{
-		File outputFile = File.createTempFile("prefix", "extension", outputDir);
-		File mTempFile = File.createTempFile(imageFileName, ".jpg", outputDir);
-		}
-		catch(Exception e)
-		{
-			Log.i("tag", "error: createImageFile "+e.getMessage());
-		}		
-		return mTempFile;
-	}
-    
-    public void onDialogDismissed( BaseDialog dialog)
-    {
-    	if (dialog.choiceDialog)
-    	{
-	    	ChoiceDialog choiceDialog = (ChoiceDialog)dialog;
-	    	int ret = choiceDialog.SelectedOption;    	
-	    	if(choiceDialog.DidAccept)
-	    	{
-	    		if (choiceDialog.SelectedOption == 0 )
-	    			savePrivatePic();
-	    		else if (choiceDialog.SelectedOption == 1)
-	    			savePublicPic();   	
-	    		showMsg("seleteced option is accepted"+Integer.toString(ret));
-	    		Log.i("tag", " choiceDialog ret = "+"seleteced option is accepted"+Integer.toString(ret));
-	    	}
-	    	else
-	    	{
-	    		showMsg("seleteced option is cancled "+Integer.toString(ret));
-	    		Log.i("tag", " choiceDialog ret = "+"seleteced option is cancled "+Integer.toString(ret));
-	    	}
-    	}
-    }    
-}
+    }   
+ }

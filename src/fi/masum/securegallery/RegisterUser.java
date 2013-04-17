@@ -13,8 +13,6 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
-//import android.os.Bundle;
-
 public class RegisterUser extends Activity {
 
 	private SQLiteDatabase userDB = null;
@@ -45,24 +43,13 @@ public class RegisterUser extends Activity {
 //			test = false;
 //		}
 
-		// if (test) {
-		// SecureNote.this.deleteDatabase(db_name);
-		// File dir = getFilesDir();
-		// File file = new File(db_path, "data");
-		// boolean deleted = file.delete();
-		// test = false;
-		// }
-
-		
 		if (checkDataBase()) {
 			// I have database so just login user
-			Log.i(tag, "yes DB. Lets login then");
+			Log.i(tag, "yes I have DB. Lets login then");
 			finish();
 			Intent startNewActivityOpen = new Intent(RegisterUser.this,
-					SecureNote.class);
+					Login.class);
 			startActivity(startNewActivityOpen);
-			//setContentView(R.layout.secure_note);
-			//LoginUser();
 		}
 		
 		try {
@@ -91,7 +78,6 @@ public class RegisterUser extends Activity {
 
 				try {
 					insertData(_username, _password, _email);
-					//lookupData();
 
 				} catch (SQLiteException ex) {
 					Log.i(tag, "#### insert error ###" + ex.getMessage());
@@ -100,10 +86,7 @@ public class RegisterUser extends Activity {
 					userDB.close();
 				}
 				finish();
-				Intent startNewActivityOpen = new Intent(RegisterUser.this,
-						SecureNote.class);
-				startActivity(startNewActivityOpen);
-
+				startActivity(new Intent(getApplicationContext(), Login.class));
 			}
 		});
 
@@ -115,7 +98,7 @@ public class RegisterUser extends Activity {
 			public void onClick(View v) {
 
 				Intent startNewActivityOpen = new Intent(RegisterUser.this,
-						SecureNote.class);
+						Login.class);
 				startActivity(startNewActivityOpen);
 
 			}

@@ -15,18 +15,14 @@ import android.widget.Toast;
 
 //import android.database.sqlite.SQLiteOpenHelper;  
 
-public class SecureNote extends Activity {
+public class Login extends Activity {
 
 	private SQLiteDatabase userDB = null;
 	private String table_Name = "user";
 	private String db_name = "login";
-	//private String tag = "masum";
-	//private SQLiteDatabase userDB = null;
-	//private String credential = "credential";
 	private Cursor cursor = null;
 	private String username = null;
 	private String password = null;
-	//private String db_name = "user";
 	private String db_path = "/data/data/fi.masum.securegallery/databases/";
 	private String tag = "masum";
 	private static boolean test = true;
@@ -34,14 +30,6 @@ public class SecureNote extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		// if (test) {
-		// SecureNote.this.deleteDatabase(db_name);
-		// File dir = getFilesDir();
-		// File file = new File(db_path, "data");
-		// boolean deleted = file.delete();
-		// test = false;
-		// }
 
 		if (checkDataBase()) {
 			Log.i(tag, "yes DB. Lets login then");
@@ -51,14 +39,13 @@ public class SecureNote extends Activity {
 
 			Log.i(tag, "no db so register a user.");
 
-			Intent startNewActivityOpen = new Intent(SecureNote.this,
+			Intent startNewActivityOpen = new Intent(Login.this,
 					RegisterUser.class);
 			startActivity(startNewActivityOpen);
 		}
 	}
 
 	private void LoginUser() {
-
 		try {
 			userDB = openOrCreateDatabase(db_name, MODE_PRIVATE, null);
 		} catch (SQLiteException se) {
@@ -68,24 +55,19 @@ public class SecureNote extends Activity {
 
 		final EditText txtUserName = (EditText) findViewById(R.id.txtUsername);
 		final EditText txtPassword = (EditText) findViewById(R.id.txtPassword);
+		final Button btnLogin = (Button) findViewById(R.id.btnLogin);
 
-		Button btnLogin = (Button) findViewById(R.id.btnLogin);
-
-		btnLogin.setOnClickListener(new OnClickListener() {
-			
-
+		btnLogin.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
 				String _username = txtUserName.getText().toString();
 				String _password = txtPassword.getText().toString();
-
-				// insertData();
 				lookupData();
 
 				if (_username.compareTo(username) == 0
 						&& _password.compareTo(password) == 0) {
 					
-					Toast.makeText(SecureNote.this,
+					Toast.makeText(Login.this,
 							"Login SUCCESSFULL NOW GO ON!", Toast.LENGTH_LONG)
 							.show();
 					Log.i(tag, "#### user:" + username
@@ -94,19 +76,10 @@ public class SecureNote extends Activity {
 					EditText txtPassword = (EditText) findViewById(R.id.txtPassword);
 					txtPassword.setText("");
 
-//					Intent startNewActivityOpen = new Intent(SecureNote.this,
-//							RecoverPass.class);
-//					startActivity(startNewActivityOpen);
 					startActivity(new Intent(getApplicationContext(), SignInActivity.class));
-
-					try {
-//						startActivity(startNewActivityOpen);
-					} catch (Exception e) {
-						Log.e(tag, e.getMessage() + "### Error #####");
-					}
-				} else {
-
-					Toast.makeText(SecureNote.this,
+				} 
+				else {
+					Toast.makeText(Login.this,
 							"Wrong username or password!", Toast.LENGTH_LONG)
 							.show();
 				}

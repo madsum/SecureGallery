@@ -5,7 +5,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="7"
+        android:minSdkVersion="8"
         android:targetSdkVersion="17" />
 
     <uses-permission android:name="android.permission.INTERNET" >
@@ -30,7 +30,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="fi.masum.securegallery.SecureNote"
+            android:name="fi.masum.securegallery.Login"
             android:label="@string/title_activity_secure_note" >
         </activity>
         <activity

@@ -81,7 +81,7 @@ public class SkyDriveActivity extends ListActivity implements OnBaseDismissListe
 	private ImageView mImageView;
 	private Bitmap mImageBitmap;
 	private Bitmap mTempImg;
-	private String mImagePath;
+	//private String mImagePath;
 	private String mCurrentPhotoPath;
 	private SkyDriveActivity mParent;
 	private Context context;
@@ -89,6 +89,7 @@ public class SkyDriveActivity extends ListActivity implements OnBaseDismissListe
 	private ChoiceDialog mChoiceDlg;
 	private YesNoDialog mYesNoDlg;    
 	private File mTempFile;
+	private boolean mRemove = false;
     
 
     @Override
@@ -113,9 +114,6 @@ public class SkyDriveActivity extends ListActivity implements OnBaseDismissListe
 			@Override
 			public void onClick(View v) {
 				
-				Intent startNewActivityOpen = new Intent(SkyDriveActivity.this,
-						CameraActivity.class);
-				startActivity(startNewActivityOpen);
 				//String _email = txtEmail.getText().toString();
 			}
 			});        
@@ -492,13 +490,17 @@ public class SkyDriveActivity extends ListActivity implements OnBaseDismissListe
         super.onStart();
         loadFolder(HOME_FOLDER);
     }
-
+    private ProgressDialog progressDialog;
     public void loadFolder(String folderId) {
         assert folderId != null;
         mCurrentFolderId = folderId;
+        //final ProgressDialog progressDialog;
 
-        final ProgressDialog progressDialog =
+        if(!this.mChoiceDlg.active || !this.mYesNoDlg.active)
+        {
+         progressDialog =
                 ProgressDialog.show(this, "", "Loading. Please wait...", true);
+        }
 
         mClient.getAsync(folderId + "/files", new LiveOperationListener() {
             @Override
@@ -592,16 +594,23 @@ public class SkyDriveActivity extends ListActivity implements OnBaseDismissListe
                     return;
                 }
 
-                loadFolder(mCurrentFolderId);
+                //loadFolder(mCurrentFolderId);
+                
             }
         });
-
+        
         uploadProgressDialog.setOnCancelListener(new OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
                 operation.cancel();
             }
-        });   
+        });
+        
+        if(mRemove)
+        {
+        	file.delete();
+        	mRemove = false;
+        }
     }
 
     // Below is all camera implementation. 
@@ -671,10 +680,10 @@ public class SkyDriveActivity extends ListActivity implements OnBaseDismissListe
 
 	public void savePrivatePic() {
 	    String fileName = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss").format(new Date())+ "_img.jpg";
-	    mImagePath = "/data/data/fi.masum.securegallery/files/"+fileName;
+	    mCurrentPhotoPath = "/data/data/fi.masum.securegallery/files/"+fileName;
 	    FileOutputStream fos;
 		try 
-		{
+		{			
 			if(mTempImg != null)
 			{
 				fos = openFileOutput(fileName, Context.MODE_PRIVATE);
@@ -692,22 +701,27 @@ public class SkyDriveActivity extends ListActivity implements OnBaseDismissListe
 	
 	public void savePublicPic() 
 	{
-		String timeStamp = new SimpleDateFormat("dd-MM-yyyy_HH-m-ss").format(new Date());
-		String imageFileName = "IMG_" + timeStamp + "_";
-		File outputDir = context.getCacheDir(); // context being the Activity pointer
-		try
+	    String fileName = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss").format(new Date())+ "_img.jpg";
+	    mCurrentPhotoPath = "/data/data/fi.masum.securegallery/files/"+fileName;
+	    FileOutputStream os;
+	    try 
+		{		
+			if(mTempImg != null) 
+			{
+				os = context.openFileOutput(fileName, Context.MODE_PRIVATE);
+				mTempImg.compress(CompressFormat.JPEG, 90, os);
+				os.close();
+			}
+		    showMsg("Pic save correctly!");
+		} 
+		catch (IOException e) 
 		{
-		File outputFile = File.createTempFile("prefix", "extension", outputDir);
-		File mTempFile = File.createTempFile(imageFileName, ".jpg", outputDir);
-		mCurrentPhotoPath = mTempFile.getAbsolutePath();
+			Log.i("tag", "erro savePrivatePic: "+e.getMessage());
 		}
-		catch(Exception e)
-		{
-			Log.i("tag", "error: createImageFile "+e.getMessage());
-		}
-						
-		galleryAddPic();
+
 		mImageView.setImageBitmap(mTempImg);
+		mRemove = true;
+		galleryAddPic();
 	}	
 		
 	private void galleryAddPic() 
@@ -726,31 +740,10 @@ public class SkyDriveActivity extends ListActivity implements OnBaseDismissListe
     	Toast toast = Toast.makeText(context, msg, duration);
     	toast.show();
 	}
-	
-	private File createImageFile() 
-	{
-		// Create an image file name
-		String timeStamp = new SimpleDateFormat("dd-MM-yyyy_HH-m-ss").format(new Date());
-		String imageFileName = "IMG_" + timeStamp + "_";
-		Log.i("tag", "timeStamp "+timeStamp+" imageFileName "+imageFileName);
-		// create temp directory to save img
-		File outputDir = context.getCacheDir(); // context being the Activity pointer
-		try
-		{
-		File outputFile = File.createTempFile("prefix", "extension", outputDir);
-		File mTempFile = File.createTempFile(imageFileName, ".jpg", outputDir);
-		}
-		catch(Exception e)
-		{
-			Log.i("tag", "error: createImageFile "+e.getMessage());
-		}		
-		return mTempFile;
-	}
-   
- 
-    
+	    
     public void onDialogDismissed( BaseDialog dialog)
     {
+    	dialog.active = false;
     	if (dialog.choiceDialog)
     	{
 	    	ChoiceDialog choiceDialog = (ChoiceDialog)dialog;
@@ -761,16 +754,7 @@ public class SkyDriveActivity extends ListActivity implements OnBaseDismissListe
 	    			savePrivatePic();
 	    		else if (choiceDialog.SelectedOption == 1)
 	    			savePublicPic();
-	    			
-	    	
-	    		showMsg("seleteced option is accepted"+Integer.toString(ret));
-	    		Log.i("tag", " choiceDialog ret = "+"seleteced option is accepted"+Integer.toString(ret));
-	    	}
-	    	else
-	    	{
-	    		showMsg("seleteced option is cancled "+Integer.toString(ret));
-	    		Log.i("tag", " choiceDialog ret = "+"seleteced option is cancled "+Integer.toString(ret));
-	    	}
+	       	}
 	    	mYesNoDlg.show();
     	}
     	else if( dialog.yesNoDialog)
@@ -781,10 +765,9 @@ public class SkyDriveActivity extends ListActivity implements OnBaseDismissListe
     		
     		if( yesDialog.ChoosedButton == -1)
     		{
-    			File photo = new File(mImagePath);
+    			File photo = new File(mCurrentPhotoPath);
     			uploadPhoto(photo.getAbsolutePath());
     		}		
-    		Log.i("tag", " YesNoDialog ret = "+Integer.toString(tt));
     	}    	
     }    
 }
