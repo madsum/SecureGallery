@@ -77,17 +77,12 @@
 </TableRow>
 
 <TableRow>
-
-    <Button
-        android:id="@+id/btnCancel"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/cancel" />
     
         <Button
-        android:id="@+id/btnLogin"
+        android:id="@+id/btnSubmit"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:text="@string/submit" />
     
 </TableRow>

@@ -6,9 +6,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Stack;
 
 import org.json.JSONArray;
@@ -23,17 +21,16 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnDismissListener;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Bitmap.CompressFormat;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -47,9 +44,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,9 +56,9 @@ import com.microsoft.live.LiveOperationException;
 import com.microsoft.live.LiveOperationListener;
 import com.microsoft.live.LiveUploadOperationListener;
 
+import fi.masum.securegallery.BaseDialog.OnBaseDismissListener;
 import fi.masum.securegallery.SkyDriveObject.Visitor;
 import fi.masum.securegallery.SkyDrivePhoto.Image;
-import fi.masum.securegallery.BaseDialog.OnBaseDismissListener;
 
 public class SkyDriveActivity extends ListActivity implements OnBaseDismissListener {
 	
