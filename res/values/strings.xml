@@ -36,5 +36,7 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_main">Secure Gallery</string>
     <string name="registred_already">An user is registred already!</string>
+    <string name="login">Login</string>
+    <string name="already_registered">An user is already registered! Please press login</string>
 
 </resources>

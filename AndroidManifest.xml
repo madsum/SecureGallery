@@ -43,7 +43,8 @@
         </activity>
         <activity
             android:name="fi.masum.securegallery.SkyDriveActivity"
-            android:label="@string/title_activity_sky_drive" >
+            android:label="@string/title_activity_sky_drive" 
+            android:theme="@style/Theme.Sherlock.Light.DarkActionBar">
         </activity>
         <activity
             android:name="fi.masum.securegallery.CameraActivity"

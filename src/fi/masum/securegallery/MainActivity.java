@@ -1,18 +1,26 @@
 package fi.masum.securegallery;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager.OnBackStackChangedListener;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 
 public class MainActivity extends SherlockFragmentActivity implements  OnFragmentChangedListener, OnBackStackChangedListener {
 	
 	private ActionBar mActionBar = null;
+	private TextView msgView = null;
+	private Button loginButton = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -20,29 +28,18 @@ public class MainActivity extends SherlockFragmentActivity implements  OnFragmen
 		setContentView(R.layout.main);
 		
 		mActionBar = getSupportActionBar();
-		mActionBar.setSubtitle("main contain");
+		mActionBar.setTitle("Secure Galleray");
+		mActionBar.setSubtitle("main");
+
 		onFragmentChanged(R.layout.register_user, null);
-		//getSupportActionBar().hide();
-//		
-//		mActionBar = getSupportActionBar();
-//		mActionBar.setSubtitle("main");
-//		mActionBar.setHomeButtonEnabled(false);
-//		getSupportFragmentManager().addOnBackStackChangedListener(this);
-//		onFragmentChanged(R.layout.register_user, null);
-		
-//		Fragment fragment = null;
-//		// do not call the method getFragmentManager()
-//		getSupportFragmentManager().addOnBackStackChangedListener(this);
-//		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-//		fragment = new RegisterUser();
-//		//fragment.setArguments(b);
-//		transaction.replace(R.id.screen_container, fragment, "RegisterUser");
-//		
-//		// add to stack as root, so the stack count is 1
-//		transaction.addToBackStack("RegisterUser");
-//		transaction.commit();
-		
 	}
+	
+	@Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) 
+    { 
+    
+    }
+
 	
 	@Override
 	public void onFragmentChanged(int layoutResId, Bundle bundle) {
@@ -74,8 +71,8 @@ public class MainActivity extends SherlockFragmentActivity implements  OnFragmen
 		final int entryCount = getSupportFragmentManager().getBackStackEntryCount();
 		if(entryCount == 1){
 			mActionBar.setTitle(R.string.app_name);
-			mActionBar.setSubtitle("main conat");
-			mActionBar.setDisplayHomeAsUpEnabled(true);
+			mActionBar.setSubtitle("main");
+			mActionBar.setDisplayHomeAsUpEnabled(false);
 		}else if(entryCount == 0){
 			finish();
 		}
@@ -85,7 +82,41 @@ public class MainActivity extends SherlockFragmentActivity implements  OnFragmen
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getSupportMenuInflater().inflate(R.menu.main, menu);
+		//onUserAdded();
 		return true;
 	}
+	
+	public void onUserAdded()
+	{
+		
+		mActionBar = getSupportActionBar();
+		mActionBar.setTitle("Secure Galleray");
+		mActionBar.setSubtitle("User alredy registered! Login");
+		mActionBar.setDisplayHomeAsUpEnabled(false);
+		loginButton = (Button) findViewById(R.id.logIn);
+		loginButton.setVisibility(View.VISIBLE);
+		
+		loginButton.setOnClickListener(new View.OnClickListener() {
+	           
+	            @Override
+	            public void onClick(View v) {
+	            	loginButton.setVisibility(View.GONE);
+	            	onFragmentChanged(R.layout.login, null);
+	            }
+	        });		 
 
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		int id = item.getItemId();
+		if(id == android.R.id.home) {
+			setContentView(R.layout.main);
+			onUserAdded();
+			Log.i("tag", "got the call");
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+	
 }

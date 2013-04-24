@@ -920,13 +920,14 @@ containing a value of this type.
         public static final int abs__textfield_searchview_right_holo_light=0x7f02006e;
         public static final int abs__toast_frame=0x7f02006f;
         public static final int audio_x_generic=0x7f020070;
-        public static final int folder=0x7f020071;
-        public static final int folder_image=0x7f020072;
-        public static final int ic_launcher=0x7f020073;
-        public static final int icon=0x7f020074;
-        public static final int image_x_generic=0x7f020075;
-        public static final int text_x_preview=0x7f020076;
-        public static final int video_x_generic=0x7f020077;
+        public static final int camera=0x7f020071;
+        public static final int folder=0x7f020072;
+        public static final int folder_image=0x7f020073;
+        public static final int ic_launcher=0x7f020074;
+        public static final int icon=0x7f020075;
+        public static final int image_x_generic=0x7f020076;
+        public static final int text_x_preview=0x7f020077;
+        public static final int video_x_generic=0x7f020078;
     }
     public static final class id {
         public static final int ShowMsg=0x7f04003e;
@@ -972,14 +973,14 @@ containing a value of this type.
         public static final int abs__title=0x7f04001b;
         public static final int abs__up=0x7f04000b;
         public static final int action_settings=0x7f04004b;
-        public static final int btnCamera=0x7f040047;
-        public static final int btnCancel=0x7f040041;
+        public static final int btnCancel=0x7f040042;
         public static final int btnIntend=0x7f040032;
         public static final int btnIntendS=0x7f040033;
         public static final int btnIntendV=0x7f040034;
         public static final int btnLogin=0x7f04003d;
-        public static final int btnSend=0x7f040042;
-        public static final int btnSubmit=0x7f040043;
+        public static final int btnSend=0x7f040043;
+        public static final int btnSubmit=0x7f040044;
+        public static final int camera=0x7f04004c;
         public static final int descriptionTextView=0x7f04004a;
         public static final int disableHome=0x7f040009;
         public static final int edit_query=0x7f040026;
@@ -987,19 +988,20 @@ containing a value of this type.
         public static final int imageView1=0x7f040035;
         public static final int linearLayout1=0x7f040049;
         public static final int listMode=0x7f040002;
-        public static final int menu_settings=0x7f04004c;
+        public static final int logIn=0x7f040040;
+        public static final int menu_settings=0x7f04004d;
         public static final int nameTextView=0x7f040037;
         public static final int normal=0x7f040001;
         public static final int screen_container=0x7f04003f;
         public static final int showCustom=0x7f040008;
         public static final int showHome=0x7f040005;
         public static final int showTitle=0x7f040007;
-        public static final int signInButton=0x7f040045;
-        public static final int signOutButton=0x7f040046;
+        public static final int signInButton=0x7f040046;
+        public static final int signOutButton=0x7f040047;
         public static final int skyDriveItemIcon=0x7f040048;
         public static final int tabMode=0x7f040003;
-        public static final int textView1=0x7f040044;
-        public static final int txtEmail=0x7f040040;
+        public static final int textView1=0x7f040045;
+        public static final int txtEmail=0x7f040041;
         public static final int txtPassword=0x7f04003c;
         public static final int txtUsername=0x7f04003a;
         public static final int typeTextView=0x7f040038;
@@ -1045,12 +1047,11 @@ containing a value of this type.
         public static final int signin=0x7f03001f;
         public static final int skydrive=0x7f030020;
         public static final int skydrive_list_item=0x7f030021;
-        public static final int user_added=0x7f030022;
     }
     public static final class menu {
         public static final int camera=0x7f0b0000;
-        public static final int file_picker=0x7f0b0001;
-        public static final int main=0x7f0b0002;
+        public static final int main=0x7f0b0001;
+        public static final int option=0x7f0b0002;
         public static final int recover_pass=0x7f0b0003;
         public static final int secure_note=0x7f0b0004;
         public static final int signin=0x7f0b0005;
@@ -1098,6 +1099,7 @@ containing a value of this type.
          */
         public static final int abs__shareactionprovider_share_with_application=0x7f090007;
         public static final int action_settings=0x7f09002d;
+        public static final int already_registered=0x7f090031;
         public static final int app_name=0x7f09000d;
         public static final int begin=0x7f090020;
         public static final int btnintend=0x7f090028;
@@ -1109,6 +1111,7 @@ containing a value of this type.
         public static final int email_=0x7f09001b;
         public static final int enter=0x7f09001a;
         public static final int hello_world=0x7f090016;
+        public static final int login=0x7f090030;
         public static final int login_=0x7f090019;
         public static final int menu_settings=0x7f090017;
         public static final int no_files=0x7f090024;

@@ -51,26 +51,26 @@ public class RegisterUserFrgment extends SherlockFragment implements OnClickList
 			Bundle savedInstanceState) {
 		mView = inflater.inflate(R.layout.register_user, container, false);
 		
-		if (test)
-		{
-			if(getActivity().getApplicationContext().deleteDatabase(db_name))
-			{
-				
-				Log.i(tag, "delete db succeeed!");
-			}
-			else
-			{
-				Log.i(tag, "delete db faild!");
-				
-			}
-			test = false;
-		}
+//		if (test)
+//		{
+//			if(getActivity().getApplicationContext().deleteDatabase(db_name))
+//			{
+//				
+//				Log.i(tag, "delete db succeeed!");
+//			}
+//			else
+//			{
+//				Log.i(tag, "delete db faild!");
+//				
+//			}
+//			test = false;
+//		}
 
 		if (checkDataBase()) {
 			// I have database so just login user
 			Log.i(tag, "yes I have DB. Lets login then");
 			mListener.onFragmentChanged(R.layout.login, null);
-			mView = inflater.inflate(R.layout.user_added, container, false);
+			mView = inflater.inflate(R.layout.main, container, false);
 			//getActivity().finish();
 			return mView;
 			}

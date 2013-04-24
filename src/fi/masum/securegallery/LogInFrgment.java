@@ -15,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -42,8 +43,8 @@ public class LogInFrgment extends SherlockFragment implements OnClickListener {
 	
 		final ActionBar actionBar = getSherlockActivity().getSupportActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
-		actionBar.setTitle("login");
-		actionBar.setSubtitle("local DB");
+		actionBar.setTitle("Login");
+		actionBar.setSubtitle("registred username & password");
 	}
 		
 	
@@ -92,7 +93,10 @@ public class LogInFrgment extends SherlockFragment implements OnClickListener {
 			
 			//getActivity().startActivity(new Intent(getActivity().getApplicationContext(), SignInActivity.class));
 			
-			
+			InputMethodManager imm = (InputMethodManager) getSherlockActivity().getApplicationContext().getSystemService(
+				      Context.INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(txtPassword.getWindowToken(), 0);
+				
 			mListener.onFragmentChanged(R.layout.signin, null);
 
 		} 

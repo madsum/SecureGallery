@@ -78,13 +78,20 @@
 
 <TableRow>
     
-        <Button
-        android:id="@+id/btnSubmit"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/submit" />
+    <TextView 
+	 android:text="@string/space" 
+	 android:id="@+id/TextView01" 
+	 android:layout_width="wrap_content" 
+	 android:layout_height="wrap_content">
+	 </TextView>
     
+     <Button
+     android:id="@+id/btnSubmit"
+     android:layout_width="fill_parent"
+     android:layout_height="wrap_content"
+     
+     android:text="@string/submit" />
+ 
 </TableRow>
 
 </TableLayout>

@@ -64,6 +64,7 @@ public abstract class BaseDialog implements DialogInterface.OnClickListener
 				this.DidAccept = true;
 			case DialogInterface.BUTTON_NEGATIVE:
 				{
+					active = false;
 					dialog.dismiss();
 					if (this.m_DismissListener != null)
 					{

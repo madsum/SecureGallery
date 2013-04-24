@@ -8,18 +8,24 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.microsoft.live.LiveAuthClient;
 import com.microsoft.live.LiveAuthException;
 import com.microsoft.live.LiveAuthListener;
@@ -57,10 +63,12 @@ public class SignInFrgment extends SherlockFragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		//setHasOptionsMenu(true);
 	
 		final ActionBar actionBar = getSherlockActivity().getSupportActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
-		actionBar.setTitle("SignIn");
+		actionBar.setTitle("Sign In");
 		actionBar.setSubtitle("sky drive");
 	}
 
@@ -76,10 +84,6 @@ public class SignInFrgment extends SherlockFragment {
         mWelcomeTextView = (TextView) mView.findViewById(R.id.TextView01);
         mSignInButton = (Button) mView.findViewById(R.id.signInButton);
         mSignOutButton = (Button) mView.findViewById(R.id.signOutButton);
-        
-//        InputMethodManager imm = (InputMethodManager)getSystemService(
-//        	      Context.INPUT_METHOD_SERVICE);
-//        	imm.hideSoftInputFromWindow(myEditText.getWindowToken(), 0);
         
         SetSignIn();
         SetSignOut();
@@ -103,6 +107,9 @@ public class SignInFrgment extends SherlockFragment {
                                                Object userState) {
                         
                     	if (status == LiveStatus.CONNECTED) {
+                    		mSignInButton.setEnabled(false);
+                    		mSignOutButton.setVisibility(View.VISIBLE);
+                    		mSignInButton.setVisibility(View.GONE);
                     		launchSkyDriveActivity(session);
                         } else {
                             showToast("Login did not connect. Status is " + status + ".");
@@ -136,7 +143,10 @@ public class SignInFrgment extends SherlockFragment {
                                                Object userState) {
                     	mApp.setSession(null);
                     	mApp.setConnectClient(null);
-                    	//showToast("I'm done Logout. Now go end it");
+                    	mSignInButton.setEnabled(true);
+                    	mSignOutButton.setVisibility(View.GONE);
+                		mSignInButton.setVisibility(View.VISIBLE);
+                    	showToast("SignOut from sky drive!");
                         //getParent().finish();
                     }
                 });
@@ -150,8 +160,6 @@ public class SignInFrgment extends SherlockFragment {
 		assert session != null;
 		mApp.setSession(session);
 		mApp.setConnectClient(new LiveConnectClient(session));
-		mSignOutButton.setVisibility(View.VISIBLE);
-		mSignInButton.setVisibility(View.GONE);
 		showToast("Login Successful!");
 		startActivity(new Intent(getActivity().getApplication().getApplicationContext(), SkyDriveActivity.class));
 	}
@@ -173,7 +181,32 @@ public class SignInFrgment extends SherlockFragment {
 //		actionBar.setDisplayHomeAsUpEnabled(true);
 //		actionBar.setTitle("signin");
 //		actionBar.setSubtitle("sub");
-	} 
-      
+	}
+	
+//	@Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) 
+//    { 
+//    
+//    }
+	
+//	@Override
+//	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+//		inflater.inflate(R.menu.option, menu);
+//
+//		super.onCreateOptionsMenu(menu, inflater);
+//	}
+//	
+//	@Override
+//	public boolean onOptionsItemSelected(MenuItem item) {
+//		switch (item.getItemId()) {
+//		case R.id.camera:
+//			Log.i("tag", "got camer click");
+//			return (true);
+//		}
+//
+//		return (super.onOptionsItemSelected(item));
+//	}	
+
+	      
 }
 
