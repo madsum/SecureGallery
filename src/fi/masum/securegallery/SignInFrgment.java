@@ -43,21 +43,6 @@ public class SignInFrgment extends SherlockFragment {
     private TextView mBeginTextView;
     private TextView mWelcomeTextView;
     private View mView = null;
-    
-	private static final int ACTION_TAKE_PHOTO = 1;
-	private static final String BITMAP_STORAGE_KEY = "viewbitmap";
-	private static final String IMAGEVIEW_VISIBILITY_STORAGE_KEY = "imageviewvisibility";
-	private ImageView mImageView;
-	private Bitmap mImageBitmap;
-	private Bitmap mTempImg;
-	private String mImagePath;
-	private String mCurrentPhotoPath;
-	public LiveConnectClient mClient;
-	private SkyDriveActivity mParent;
-	private Context context;
-	private String[] mOptions = {"Save in private gallery", "Save in photo gallery"};
-	private ChoiceDialog mChoiceDlg;  
-	private File mTempFile;
 	private OnFragmentChangedListener mListener = null;
 	
 	@Override
