@@ -1,0 +1,6 @@
+[submodule "live"]
+	path = live
+	url = git@github.com:liveservices/LiveSDK-for-Android.git
+[submodule "ActionBarSherlock"]
+	path = ActionBarSherlock
+	url = git@github.com:JakeWharton/ActionBarSherlock.git
